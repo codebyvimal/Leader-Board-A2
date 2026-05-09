@@ -16,7 +16,28 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Admin gating (Supabase)
+
+The **Admin** sidebar button is only shown when the signed-in admin email exists in Supabase.
+
+### Required environment variables
+
+Create a `.env.local` with:
+
+```bash
+SUPABASE_URL="https://<project-ref>.supabase.co"
+SUPABASE_SERVICE_ROLE_KEY="<service-role-key>"
+```
+
+### Required table
+
+Create a table `admin_emails` with:
+
+- `email` (text, primary key)
+
+Add your email as a row. The app checks it via `POST /api/admin/allowed`.
+
+> Note: The Service Role key is server-only. Never expose it as a `NEXT_PUBLIC_*` env var.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
