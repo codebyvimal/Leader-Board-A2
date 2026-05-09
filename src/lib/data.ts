@@ -52,6 +52,7 @@ export interface PublicProfile {
   avatarInitials: string;
   avatarUrl?: string;
   coverUrl?: string;
+  xp?: number;
 }
 
 // Supabase fetch functions
@@ -153,6 +154,7 @@ export async function getCurrentProfile(): Promise<PublicProfile | null> {
     avatarInitials: (data.display_name || data.username || "OP").substring(0, 2).toUpperCase(),
     avatarUrl: data.avatar_url,
     coverUrl: data.cover_url,
+    xp: data.xp || 0,
   };
 }
 
@@ -164,4 +166,5 @@ export const fallbackProfile: PublicProfile = {
   headline: "Awaiting Sync",
   bio: "Initialize connection to load data.",
   avatarInitials: "OP",
+  xp: 0,
 };
