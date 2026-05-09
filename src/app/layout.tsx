@@ -1,9 +1,16 @@
 import { type Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Orbitron, Space_Grotesk } from "next/font/google";
 import "./globals.css";
+import { FluidCursor } from "@/components/FluidCursor";
+import { AuthGuard } from "@/components/AuthGuard";
 
-const inter = Inter({
-  variable: "--font-inter",
+const orbitron = Orbitron({
+  variable: "--font-orbitron",
+  subsets: ["latin"],
+});
+
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
   subsets: ["latin"],
 });
 
@@ -18,11 +25,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="dark scroll-smooth">
       <body
-        className={`${inter.variable} antialiased bg-background text-foreground min-h-screen`}
+        className={`${orbitron.variable} ${spaceGrotesk.variable} antialiased min-h-screen`}
       >
-        {children}
+        <AuthGuard>
+          <FluidCursor />
+          <div className="shifting-bg" />
+          {children}
+        </AuthGuard>
       </body>
     </html>
   );

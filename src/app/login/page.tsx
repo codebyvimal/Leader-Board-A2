@@ -1,63 +1,131 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Link from "next/link";
-import { ArrowRight, Lock } from "lucide-react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Lock, User, Shield } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 export default function LoginPage() {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    try {
+      // 1. Resolve username to email
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select("email")
+        .eq("username", username)
+        .single();
+
+      if (profileError || !profile?.email) {
+        throw new Error("Identity not found or unauthorized.");
+      }
+
+      // 2. Sign in with the resolved email
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: profile.email,
+        password,
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      if (data.session) {
+        router.push("/");
+      }
+    } catch (err: any) {
+      setError(err.message || "Invalid credentials.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-background relative overflow-hidden">
-      {/* Background glowing orbs */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-accent/20 rounded-full blur-[128px] pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-900/20 rounded-full blur-[128px] pointer-events-none" />
-
       <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-        className="w-full max-w-md z-10 p-4"
+        initial={{ opacity: 0, scale: 0.9, y: 30 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+        className="w-full max-w-md z-10 p-6"
       >
-        <div className="text-center mb-10">
-          <div className="w-16 h-16 mx-auto rounded-2xl bg-accent flex items-center justify-center text-white font-bold text-3xl tracking-wider shadow-[0_0_30px_rgba(124,58,237,0.5)] mb-6">
-            A
-          </div>
-          <h1 className="text-3xl font-bold tracking-widest text-white mb-2">ASCEND</h1>
-          <p className="text-gray-400">Elite private roadmap competition.</p>
+        <div className="text-center mb-12">
+          <h1 className="text-4xl lg:text-5xl font-black tracking-[0.3em] text-white mb-4 font-orbitron uppercase">
+            ASCEND
+          </h1>
+          <p className="text-[var(--text-soft)] font-bold tracking-widest text-xs uppercase opacity-60">Elite Protocol Terminal</p>
         </div>
 
-        <div className="glass-card rounded-2xl p-8 space-y-6">
-          <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
-            <div>
-              <label className="block text-sm font-medium text-gray-400 mb-2">Email Access</label>
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent transition-all"
-              />
+        <div className="glass-panel rounded-3xl p-10 space-y-8 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--gold)] opacity-5 blur-[40px] pointer-events-none" />
+          
+          <form className="space-y-6" onSubmit={handleLogin}>
+            {error && (
+              <div className="bg-red-500/10 border border-red-500/50 text-red-400 p-3 rounded-xl text-xs font-bold uppercase tracking-widest text-center">
+                {error}
+              </div>
+            )}
+            
+            <div className="space-y-5">
+              <div className="space-y-3">
+                <label className="block text-[10px] font-black text-[var(--text-soft)] uppercase tracking-[0.2em] ml-1">Identity / Username</label>
+                <div className="relative group">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-[var(--text-soft)] group-focus-within:text-[var(--gold)] transition-colors">
+                    <User className="w-5 h-5" />
+                  </div>
+                  <input
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="USERNAME"
+                    required
+                    className="w-full bg-[var(--bg-0)]/60 border border-[var(--line)] rounded-2xl py-4 pl-12 pr-4 text-white placeholder-gray-700 focus:outline-none focus:ring-2 focus:ring-[var(--gold)]/30 focus:border-[var(--gold)] transition-all font-bold tracking-wider"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <label className="block text-[10px] font-black text-[var(--text-soft)] uppercase tracking-[0.2em] ml-1">Passcode</label>
+                <div className="relative group">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-[var(--text-soft)] group-focus-within:text-[var(--gold)] transition-colors">
+                    <Lock className="w-5 h-5" />
+                  </div>
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    required
+                    className="w-full bg-[var(--bg-0)]/60 border border-[var(--line)] rounded-2xl py-4 pl-12 pr-4 text-white placeholder-gray-700 focus:outline-none focus:ring-2 focus:ring-[var(--gold)]/30 focus:border-[var(--gold)] transition-all font-bold tracking-wider"
+                  />
+                </div>
+              </div>
             </div>
             
-            <Link href="/" className="block">
-              <button className="w-full bg-white text-black font-semibold py-3 rounded-xl transition-all hover:bg-gray-200 mt-2 flex items-center justify-center gap-2 group">
-                Enter Platform
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </button>
-            </Link>
+            <button 
+              type="submit" 
+              disabled={loading}
+              className="w-full bg-white/5 border border-[var(--line)] hover:border-[var(--gold)]/30 hover:bg-[var(--gold)]/10 text-white font-bold py-4 rounded-2xl transition-all flex items-center justify-center gap-4 group mt-8 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Shield className="w-5 h-5 text-[var(--gold)]" />
+              <span className="text-sm uppercase tracking-widest font-bold">
+                {loading ? "Authenticating..." : "Encrypted Access"}
+              </span>
+            </button>
           </form>
-
-          <div className="relative flex items-center py-2">
-            <div className="flex-grow border-t border-border"></div>
-            <span className="flex-shrink-0 mx-4 text-gray-600 text-xs font-medium">OR</span>
-            <div className="flex-grow border-t border-border"></div>
-          </div>
-
-          <button className="w-full bg-white/5 border border-white/10 hover:bg-white/10 text-white font-medium py-3 rounded-xl transition-all flex items-center justify-center gap-3">
-            <Lock className="w-5 h-5" />
-            Continue with Email
-          </button>
         </div>
         
-        <p className="text-center text-gray-600 text-xs mt-8">
-          By entering, you agree to the silent competition.
+        <p className="text-center text-[var(--text-soft)] text-[10px] font-black mt-10 uppercase tracking-[0.2em] opacity-40">
+          Terminal ID: 0xFF-PROTOCOL-A1
         </p>
       </motion.div>
     </div>

@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { ActivityEvent } from "@/lib/data";
 import Link from "next/link";
-import { Award, CheckCircle2, Flame, ShieldCheck } from "lucide-react";
+import { Award, CheckCircle2, Flame, ShieldCheck, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ActivityFeedProps {
@@ -26,22 +26,27 @@ function iconForType(type: ActivityEvent["type"]) {
 function accentForType(type: ActivityEvent["type"]) {
   switch (type) {
     case "task_completed":
-      return "text-emerald-300 bg-emerald-500/10 border-emerald-500/20";
+      return "text-[var(--electric-blue)] bg-[var(--electric-blue)]/10 border-[var(--electric-blue)]/20 shadow-[0_0_15px_var(--glow-blue)]";
     case "proof_submitted":
-      return "text-accent bg-accent/10 border-accent/20";
+      return "text-[var(--neon-purple)] bg-[var(--neon-purple)]/10 border-[var(--neon-purple)]/20 shadow-[0_0_15px_var(--glow-purple)]";
     case "streak_milestone":
-      return "text-orange-300 bg-orange-500/10 border-orange-500/20";
+      return "text-amber-400 bg-amber-500/10 border-amber-500/20 shadow-[0_0_15px_rgba(251,191,36,0.2)]";
     case "rank_change":
-      return "text-sky-300 bg-sky-500/10 border-sky-500/20";
+      return "text-sky-400 bg-sky-500/10 border-sky-500/20 shadow-[0_0_15px_rgba(56,189,248,0.2)]";
   }
 }
 
 export function ActivityFeed({ events }: ActivityFeedProps) {
   return (
-    <div className="glass-card rounded-2xl p-6">
-      <div className="flex items-center justify-between mb-8">
-        <h2 className="text-xl font-semibold text-white tracking-wide">Activity</h2>
-        <div className="text-xs font-medium text-gray-400">Last 7 days</div>
+    <div className="glass-panel rounded-2xl p-8 glow-border">
+      <div className="flex items-center justify-between mb-10">
+        <div className="flex items-center gap-3">
+          <Zap className="w-4 h-4 text-[var(--electric-blue)] fill-[var(--electric-blue)]" />
+          <h2 className="text-sm font-black text-white tracking-[0.2em] uppercase font-orbitron">Protocol Stream</h2>
+        </div>
+        <div className="text-[10px] font-black text-[var(--text-soft)] uppercase tracking-widest bg-white/5 px-4 py-2 rounded-xl border border-[var(--line)]">
+          Sync Cycle: 7 Days
+        </div>
       </div>
 
       <div className="space-y-4">
@@ -50,41 +55,44 @@ export function ActivityFeed({ events }: ActivityFeedProps) {
           return (
             <motion.div
               key={event.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: index * 0.06 }}
-              className="flex gap-4 p-4 rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 transition-colors"
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: index * 0.05 }}
+              className="flex gap-5 p-5 rounded-2xl border border-[var(--line)] bg-[var(--bg-0)]/40 hover:bg-white/5 transition-all duration-300 group relative overflow-hidden"
             >
+              <div className="absolute top-0 right-0 w-24 h-24 bg-[var(--electric-blue)] opacity-0 group-hover:opacity-[0.03] blur-[40px] pointer-events-none transition-opacity" />
+              
               <div
                 className={cn(
-                  "w-10 h-10 rounded-xl border flex items-center justify-center shrink-0",
+                  "w-12 h-12 rounded-xl border flex items-center justify-center shrink-0 transition-transform group-hover:scale-110 duration-500",
                   accentForType(event.type)
                 )}
               >
-                <Icon className="w-5 h-5" />
+                <Icon className="w-6 h-6" />
               </div>
 
               <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-9 h-9 rounded-full bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center text-xs font-bold border border-white/10 shadow-inner">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div className="flex items-center gap-4 min-w-0">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--bg-0)] to-[var(--bg-1)] flex items-center justify-center text-xs font-black border border-[var(--line)] shadow-lg shrink-0 group-hover:border-[var(--electric-blue)] transition-colors">
                       {event.userAvatar}
                     </div>
                     <div className="min-w-0">
-                      <div className="text-sm text-gray-200 truncate">
+                      <div className="text-[15px] text-[var(--text-soft)] truncate">
                         <Link
                           href={`/u/${event.userId}`}
-                          className="font-semibold text-white hover:text-accent transition-colors"
+                          className="font-black text-white hover:text-[var(--electric-blue)] transition-colors font-orbitron text-xs uppercase tracking-wider"
                         >
                           {event.userName}
                         </Link>{" "}
-                        <span className="text-gray-300">{event.title}</span>
+                        <span className="font-medium">{event.title}</span>
                       </div>
-                      {event.detail && <div className="text-xs text-gray-500 mt-1">{event.detail}</div>}
+                      {event.detail && <div className="text-xs text-[var(--text-soft)] opacity-60 mt-1.5 font-bold uppercase tracking-wider leading-relaxed">{event.detail}</div>}
                     </div>
                   </div>
 
-                  <div className="text-xs text-gray-500 shrink-0">
+                  <div className="text-[10px] font-black text-[var(--text-soft)] opacity-40 uppercase tracking-widest whitespace-nowrap sm:text-right">
                     {new Date(event.timestamp).toLocaleString(undefined, {
                       month: "short",
                       day: "numeric",

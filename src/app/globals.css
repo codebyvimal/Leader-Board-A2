@@ -1,82 +1,123 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-border: var(--border);
-  --font-sans: var(--font-inter);
+  --color-background: var(--bg-0);
+  --color-foreground: var(--text-main);
+  --color-card: var(--glass-bg);
+  --color-border: var(--line);
+  --font-orbitron: var(--font-orbitron);
+  --font-space: var(--font-space-grotesk);
 }
 
 :root {
-  --background: #050816;
-  --foreground: #f3f4f6;
-  --card: #0B1020;
-  --card-foreground: #f3f4f6;
-  --accent: #7C3AED;
-  --accent-foreground: #ffffff;
-  --border: rgba(255, 255, 255, 0.08);
+  /* Navy Blue Pro Max Palette */
+  --bg-0: #020c1b;
+  --bg-1: #0a192f;
+  --cream: #e6f1ff;
+  --gold: #64ffda; /* Cyan accent */
+  --gold-muted: #3b82f6; /* Blue accent */
+  --gold-deep: #172a45;
+  
+  /* Text Colors */
+  --text-main: #ccd6f6;
+  --text-soft: #8892b0;
+  
+  /* UI Elements */
+  --line: #233554;
+  --glass-bg: rgba(10, 25, 47, 0.6);
+  --glass-border: rgba(100, 255, 218, 0.15);
+  
+  /* Effects */
+  --glow-gold: rgba(0, 0, 0, 0.4);
+  --backdrop-blur: 24px;
+}
+
+/* Sharp Edges globally */
+*, *::before, *::after {
+  border-radius: 0 !important;
 }
 
 body {
-  background: radial-gradient(1200px 800px at 20% 10%, rgba(124, 58, 237, 0.14), transparent 55%),
-    radial-gradient(900px 700px at 85% 25%, rgba(88, 28, 135, 0.18), transparent 55%),
-    radial-gradient(1200px 900px at 40% 110%, rgba(2, 6, 23, 0.9), rgba(2, 6, 23, 0.35) 35%, transparent 70%),
-    var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), sans-serif;
-}
-
-.page-vignette {
+  background-color: var(--bg-0);
+  background-image: 
+    linear-gradient(rgba(48, 54, 61, 0.3) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(48, 54, 61, 0.3) 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-position: center center;
+  color: var(--text-main);
+  font-family: var(--font-space), sans-serif;
+  min-height: 100vh;
   position: relative;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
 }
 
-.page-vignette::before {
-  content: "";
-  position: absolute;
+/* Shifting Background Gradient on Scroll */
+.shifting-bg {
+  position: fixed;
   inset: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(900px 600px at 50% -10%, rgba(255, 255, 255, 0.05), transparent 60%),
-    radial-gradient(1200px 900px at 50% 120%, rgba(0, 0, 0, 0.65), transparent 60%);
-  opacity: 0.9;
+  z-index: -1;
+  background: radial-gradient(
+    circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(100, 255, 218, 0.05) 0%,
+    transparent 60%
+  );
+  transition: background 0.5s ease;
 }
 
-/* Glassmorphism utility classes */
-@utility glass {
-  background: rgba(11, 16, 32, 0.6);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--border);
+h1, h2, h3, .font-orbitron {
+  font-family: var(--font-orbitron), sans-serif;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
-@utility glass-card {
-  background: linear-gradient(145deg, rgba(30, 41, 59, 0.4), rgba(15, 23, 42, 0.2));
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--border);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+@utility glass-panel {
+  background: linear-gradient(145deg, rgba(33, 38, 45, 0.6) 0%, rgba(22, 27, 34, 0.8) 100%);
+  backdrop-filter: blur(var(--backdrop-blur));
+  -webkit-backdrop-filter: blur(var(--backdrop-blur));
+  border: 1px solid var(--line);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
-@utility text-glow {
-  text-shadow: 0 0 15px rgba(124, 58, 237, 0.5);
+@utility glow-border {
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  will-change: transform;
+
+  &:hover {
+    transform: translateY(-6px) rotate(-1deg) scale(1.02);
+  }
 }
 
-/* Hide scrollbar for cleaner UI */
+
+@utility text-gradient {
+  background: linear-gradient(to bottom right, #fff, var(--gold), #fff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@utility glow-gold-shadow {
+  box-shadow: 0 0 40px var(--glow-gold);
+}
+
+/* Hide scrollbar */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--bg-0);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--gold-deep);
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--gold);
 }

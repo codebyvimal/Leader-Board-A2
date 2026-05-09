@@ -1,62 +1,86 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Sidebar } from "@/components/Sidebar";
-import { Section, Task, TaskStatus, mockRoadmap } from "@/lib/data";
-import { clearRoadmapStorage, loadRoadmapFromStorage, saveRoadmapToStorage } from "@/lib/roadmapStore";
+import { Section, Task, TaskStatus, getRoadmap } from "@/lib/data";
 import { cn } from "@/lib/utils";
-import { Check, Download, Plus, Shield, Trash2, Upload } from "lucide-react";
-
-type AdminAuth = {
-  email: string;
-  isAuthed: boolean;
-};
-
-const ADMIN_AUTH_KEY = "ascend:adminAuth:v1";
-
-function loadAdminAuth(): AdminAuth | null {
-  if (typeof window === "undefined") return null;
-  try {
-    const raw = window.localStorage.getItem(ADMIN_AUTH_KEY);
-    if (!raw) return null;
-    return JSON.parse(raw) as AdminAuth;
-  } catch {
-    return null;
-  }
-}
-
-function saveAdminAuth(auth: AdminAuth) {
-  try {
-    window.localStorage.setItem(ADMIN_AUTH_KEY, JSON.stringify(auth));
-  } catch {
-    // ignore
-  }
-}
-
-function getInitialSections(): Section[] {
-  return loadRoadmapFromStorage() ?? mockRoadmap;
-}
+import { Check, Download, Plus, Shield, Trash2, Upload, Save } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 function uid(prefix: string) {
   return `${prefix}_${Math.random().toString(16).slice(2)}_${Date.now().toString(16)}`;
 }
 
+const inputClass =
+  "w-full bg-white/5 border border-[var(--line)] rounded-2xl py-4 px-5 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-[var(--gold)]/30 focus:border-[var(--gold)] transition-all font-bold text-[14px]";
+
 export default function AdminPage() {
-  const [auth, setAuth] = useState<AdminAuth>(() => loadAdminAuth() ?? { email: "", isAuthed: false });
-  const [email, setEmail] = useState("");
-  const [sections, setSections] = useState<Section[]>(() => getInitialSections());
-  const [selectedSectionId, setSelectedSectionId] = useState<string | null>(() => getInitialSections()[0]?.id ?? null);
+  const [adminEmail, setAdminEmail] = useState<string | null>(null);
+  const [sections, setSections] = useState<Section[]>([]);
+  const [users, setUsers] = useState<any[]>([]);
+  const [selectedSectionId, setSelectedSectionId] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    async function init() {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      const { getCurrentProfile, getLeaderboard } = await import("@/lib/data");
+      const userProfile = await getCurrentProfile();
+      
+      if (session?.user && userProfile) {
+        if (userProfile.handle === "ramadass" || userProfile.handle === "vimal") {
+          setAdminEmail(userProfile.handle);
+        }
+      }
+      
+      const fetched = await getRoadmap();
+      setSections(fetched);
+      if (fetched.length > 0) setSelectedSectionId(fetched[0].id);
+
+      const fetchedUsers = await getLeaderboard();
+      setUsers(fetchedUsers);
+    }
+    init();
+  }, []);
+
   const selectedSection = useMemo(
     () => sections.find((s) => s.id === selectedSectionId) ?? null,
     [sections, selectedSectionId]
   );
 
-  const persist = (next: Section[]) => {
-    setSections(next);
-    saveRoadmapToStorage(next);
-  };
+  const requireAuthed = adminEmail !== null;
 
-  const requireAuthed = auth.isAuthed;
+  const saveToSupabase = async () => {
+    setSaving(true);
+    try {
+      // For simplicity in this demo admin, we delete all existing tasks and re-insert them.
+      // In production, we'd do smart upserts/deletes.
+      await supabase.from("tasks").delete().neq("id", "00000000-0000-0000-0000-000000000000"); // hack to delete all
+      
+      let orderIndex = 0;
+      for (const section of sections) {
+        for (const task of section.tasks) {
+          await supabase.from("tasks").insert({
+            id: task.id,
+            section_title: section.title,
+            title: task.title,
+            description: task.description,
+            xp_reward: task.xp,
+            deadline: task.deadline,
+            status: task.status,
+            order_index: orderIndex++,
+          });
+        }
+      }
+      alert("Roadmap successfully synced to Supabase!");
+    } catch (err) {
+      console.error(err);
+      alert("Error saving to database.");
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <div className="flex min-h-screen bg-background">
@@ -66,70 +90,41 @@ export default function AdminPage() {
         <div className="max-w-7xl mx-auto">
           <header className="mb-8 lg:mb-10 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 lg:gap-8">
             <div>
-              <p className="text-accent font-medium tracking-widest text-xs lg:text-sm mb-2">ADMIN</p>
-              <h1 className="text-3xl lg:text-4xl font-bold tracking-tight text-white">Roadmap Builder</h1>
-              <p className="text-gray-400 mt-2 lg:mt-3 max-w-3xl text-sm lg:text-base">
-                Create and edit the roadmap (sections + tasks). Changes are saved locally for now, and the main dashboard
-                will use them automatically.
+              <p className="text-[var(--gold)] font-black tracking-widest text-xs lg:text-sm mb-2 font-orbitron uppercase">Protocol Control</p>
+              <h1 className="text-3xl lg:text-4xl font-black tracking-tight text-white uppercase font-orbitron">Admin Control Center</h1>
+              <p className="text-[var(--text-soft)] mt-2 lg:mt-3 max-w-3xl text-sm lg:text-base font-medium">
+                Create the roadmap or directly assign XP to students. All changes are synced to your database.
               </p>
             </div>
 
-            <div className="flex sm:hidden items-center gap-2 text-xs font-semibold text-white bg-white/5 px-3 py-2 rounded-full border border-white/10">
-              <Shield className={cn("w-4 h-4", requireAuthed ? "text-emerald-300" : "text-gray-400")} />
-              {requireAuthed ? `Signed in as ${auth.email}` : "Not signed in"}
-            </div>
-            <div className="hidden sm:flex items-center gap-2 text-xs font-semibold text-white bg-white/5 px-3 py-2 rounded-full border border-white/10">
-              <Shield className={cn("w-4 h-4", requireAuthed ? "text-emerald-300" : "text-gray-400")} />
-              {requireAuthed ? `Signed in as ${auth.email}` : "Not signed in"}
+            <div className="hidden sm:flex items-center gap-2 text-xs font-semibold text-white bg-white/5 px-4 py-3 rounded-xl border border-white/10 shadow-lg">
+              <Shield className={cn("w-4 h-4", requireAuthed ? "text-emerald-400" : "text-gray-500")} />
+              {requireAuthed ? `Verified Admin: ${adminEmail}` : "Access Denied"}
             </div>
           </header>
 
           {!requireAuthed ? (
-            <section className="glass-card rounded-2xl p-6 max-w-xl border border-white/10">
-              <div className="text-lg font-semibold text-white">Admin sign up</div>
-              <p className="text-gray-400 mt-2 text-sm">
-                This is UI-only authentication to unblock building. We can wire real auth later.
+            <section className="glass-panel rounded-3xl p-8 max-w-xl border border-[var(--line)]">
+              <div className="text-xl font-black text-white font-orbitron tracking-widest uppercase text-center">Admin Access Required</div>
+              <p className="text-[var(--text-soft)] mt-4 text-sm text-center font-medium">
+                You must be logged in with an authorized admin account to access the Protocol Control Center.
               </p>
-
-              <form
-                className="mt-6 space-y-4"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  const next = { email: email.trim(), isAuthed: true };
-                  setAuth(next);
-                  saveAdminAuth(next);
-                }}
-              >
-                <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-2">Admin email</label>
-                  <input
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="admin@ascend.local"
-                    className={inputClass}
-                  />
-                </div>
-
-                <button className="w-full bg-white text-black font-semibold py-3 rounded-xl transition-all hover:bg-gray-200 mt-2 flex items-center justify-center gap-2">
-                  <Check className="w-4 h-4" />
-                  Create admin
-                </button>
-              </form>
             </section>
           ) : (
-            <section className="grid grid-cols-1 lg:grid-cols-[360px_1fr] gap-8">
-              {/* Left: Sections */}
-              <div className="glass-card rounded-2xl p-6 border border-white/10 h-fit">
-                <div className="flex items-center justify-between mb-6">
-                  <div className="text-lg font-semibold text-white">Sections</div>
+            <>
+              <StudentManager users={users} />
+              
+              <section className="grid grid-cols-1 lg:grid-cols-[360px_1fr] gap-8 mt-8">
+                {/* Left: Sections */}
+                <div className="glass-panel rounded-3xl p-6 border border-[var(--line)] h-fit shadow-xl">
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="text-lg font-black text-white uppercase tracking-widest font-orbitron">Sections</div>
                   <button
-                    className="text-xs font-semibold text-white bg-white/5 hover:bg-white/10 border border-white/10 px-3 py-2 rounded-xl transition-colors inline-flex items-center gap-2"
+                    className="text-xs font-bold text-[var(--bg-0)] bg-[var(--gold)] hover:bg-[var(--gold-muted)] px-3 py-2 rounded-xl transition-colors inline-flex items-center gap-2 uppercase tracking-wider"
                     onClick={() => {
                       const nextSection: Section = { id: uid("section"), title: "New Section", tasks: [] };
-                      const next = [nextSection, ...sections];
-                      persist(next);
+                      const next = [...sections, nextSection];
+                      setSections(next);
                       setSelectedSectionId(nextSection.id);
                     }}
                   >
@@ -145,128 +140,90 @@ export default function AdminPage() {
                       <button
                         key={s.id}
                         className={cn(
-                          "w-full text-left px-4 py-3 rounded-xl border transition-colors",
+                          "w-full text-left px-4 py-4 rounded-2xl border transition-all duration-300",
                           isActive
-                            ? "bg-white/10 border-white/15 text-white"
-                            : "bg-white/5 border-white/10 text-gray-300 hover:bg-white/10"
+                            ? "bg-[var(--gold)]/10 border-[var(--gold)]/30 text-white shadow-[0_0_15px_var(--glow-gold)]"
+                            : "bg-white/5 border-white/5 text-[var(--text-soft)] hover:bg-white/10"
                         )}
                         onClick={() => setSelectedSectionId(s.id)}
                       >
-                        <div className="font-semibold truncate">{s.title}</div>
-                        <div className="text-xs text-gray-500 mt-1">{s.tasks.length} tasks</div>
+                        <div className="font-bold truncate text-[15px]">{s.title}</div>
+                        <div className="text-[11px] text-[var(--gold)] font-black uppercase tracking-widest mt-1">{s.tasks.length} tasks</div>
                       </button>
                     );
                   })}
                 </div>
 
-                <div className="mt-6 pt-6 border-t border-white/10 flex flex-wrap gap-2">
+                <div className="mt-8 pt-8 border-t border-[var(--line)]">
                   <button
-                    className="text-xs font-semibold text-white bg-white/5 hover:bg-white/10 border border-white/10 px-3 py-2 rounded-xl transition-colors inline-flex items-center gap-2"
-                    onClick={() => {
-                      const blob = new Blob([JSON.stringify(sections, null, 2)], { type: "application/json" });
-                      const url = URL.createObjectURL(blob);
-                      const a = document.createElement("a");
-                      a.href = url;
-                      a.download = "ascend-roadmap.json";
-                      a.click();
-                      URL.revokeObjectURL(url);
-                    }}
+                    onClick={saveToSupabase}
+                    disabled={saving}
+                    className="w-full text-sm font-black text-[var(--bg-0)] bg-[var(--gold)] hover:bg-[var(--gold-muted)] px-4 py-4 rounded-2xl transition-all inline-flex items-center justify-center gap-3 uppercase tracking-widest shadow-[0_0_20px_var(--glow-gold)] disabled:opacity-50"
                   >
-                    <Download className="w-4 h-4" />
-                    Export JSON
-                  </button>
-
-                  <label className="text-xs font-semibold text-white bg-white/5 hover:bg-white/10 border border-white/10 px-3 py-2 rounded-xl transition-colors inline-flex items-center gap-2 cursor-pointer">
-                    <Upload className="w-4 h-4" />
-                    Import JSON
-                    <input
-                      type="file"
-                      accept="application/json"
-                      className="hidden"
-                      onChange={async (e) => {
-                        const file = e.target.files?.[0];
-                        if (!file) return;
-                        const text = await file.text();
-                        const parsed = JSON.parse(text) as Section[];
-                        persist(parsed);
-                        setSelectedSectionId(parsed[0]?.id ?? null);
-                        e.currentTarget.value = "";
-                      }}
-                    />
-                  </label>
-
-                  <button
-                    className="text-xs font-semibold text-red-300 bg-red-500/10 hover:bg-red-500/15 border border-red-500/20 px-3 py-2 rounded-xl transition-colors inline-flex items-center gap-2"
-                    onClick={() => {
-                      clearRoadmapStorage();
-                      persist(mockRoadmap);
-                      setSelectedSectionId(mockRoadmap[0]?.id ?? null);
-                    }}
-                  >
-                    <Trash2 className="w-4 h-4" />
-                    Reset
+                    <Save className="w-5 h-5" />
+                    {saving ? "Syncing..." : "Sync to Database"}
                   </button>
                 </div>
               </div>
 
               {/* Right: Editor */}
-              <div className="glass-card rounded-2xl p-6 border border-white/10">
+              <div className="glass-panel rounded-3xl p-8 border border-[var(--line)] shadow-xl">
                 {!selectedSection ? (
-                  <div className="text-gray-400">Select a section to edit.</div>
+                  <div className="text-[var(--text-soft)] font-medium text-center py-20">Select a section to edit.</div>
                 ) : (
                   <>
-                    <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
+                    <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
                       <div className="flex-1">
-                        <label className="block text-sm font-medium text-gray-400 mb-2">Section title</label>
+                        <label className="block text-[10px] font-black text-[var(--text-soft)] uppercase tracking-[0.2em] mb-2">Section Title</label>
                         <input
                           value={selectedSection.title}
                           onChange={(e) => {
                             const next = sections.map((s) =>
                               s.id === selectedSection.id ? { ...s, title: e.target.value } : s
                             );
-                            persist(next);
+                            setSections(next);
                           }}
                           className={inputClass}
                         />
                       </div>
                       <button
-                        className="text-xs font-semibold text-red-300 bg-red-500/10 hover:bg-red-500/15 border border-red-500/20 px-3 py-3 rounded-xl transition-colors inline-flex items-center gap-2 h-[46px]"
+                        className="text-xs font-bold text-[#ff4d6d] bg-[#ff4d6d]/10 hover:bg-[#ff4d6d]/20 border border-[#ff4d6d]/20 px-5 py-3 rounded-2xl transition-colors inline-flex items-center gap-2 h-[56px] uppercase tracking-wider"
                         onClick={() => {
                           const next = sections.filter((s) => s.id !== selectedSection.id);
-                          persist(next);
+                          setSections(next);
                           setSelectedSectionId(next[0]?.id ?? null);
                         }}
                       >
                         <Trash2 className="w-4 h-4" />
-                        Delete section
+                        Delete Section
                       </button>
                     </div>
 
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="text-lg font-semibold text-white">Tasks</div>
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="text-xl font-black text-white uppercase tracking-widest font-orbitron">Tasks</div>
                       <button
-                        className="text-xs font-semibold text-white bg-accent/20 hover:bg-accent/30 border border-accent/20 px-3 py-2 rounded-xl transition-colors inline-flex items-center gap-2"
+                        className="text-xs font-bold text-white bg-white/10 hover:bg-white/20 border border-white/10 px-4 py-3 rounded-2xl transition-colors inline-flex items-center gap-2 uppercase tracking-wider"
                         onClick={() => {
                           const task: Task = {
                             id: uid("task"),
-                            title: "New task",
-                            description: "Describe the task and how proof should be submitted.",
+                            title: "New Task",
+                            description: "Describe the task protocol.",
                             xp: 250,
                             deadline: new Date().toISOString().slice(0, 10),
                             status: "upcoming",
                           };
                           const next = sections.map((s) =>
-                            s.id === selectedSection.id ? { ...s, tasks: [task, ...s.tasks] } : s
+                            s.id === selectedSection.id ? { ...s, tasks: [...s.tasks, task] } : s
                           );
-                          persist(next);
+                          setSections(next);
                         }}
                       >
                         <Plus className="w-4 h-4" />
-                        Add task
+                        Add Task
                       </button>
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="space-y-6">
                       {selectedSection.tasks.map((t) => (
                         <TaskEditor
                           key={t.id}
@@ -276,31 +233,120 @@ export default function AdminPage() {
                               if (s.id !== selectedSection.id) return s;
                               return { ...s, tasks: s.tasks.map((x) => (x.id === t.id ? nextTask : x)) };
                             });
-                            persist(next);
+                            setSections(next);
                           }}
                           onDelete={() => {
                             const next = sections.map((s) => {
                               if (s.id !== selectedSection.id) return s;
                               return { ...s, tasks: s.tasks.filter((x) => x.id !== t.id) };
                             });
-                            persist(next);
+                            setSections(next);
                           }}
                         />
                       ))}
 
                       {selectedSection.tasks.length === 0 && (
-                        <div className="text-gray-500 text-sm bg-white/5 border border-white/10 rounded-xl p-5">
-                          No tasks yet. Add your first task.
+                        <div className="text-[var(--text-soft)] text-sm bg-white/5 border border-[var(--line)] rounded-2xl p-8 text-center font-medium">
+                          No tasks configured. Add your first protocol task.
                         </div>
                       )}
                     </div>
                   </>
                 )}
               </div>
-            </section>
+              </section>
+            </>
           )}
         </div>
       </main>
+    </div>
+  );
+}
+
+function StudentManager({ users }: { users: any[] }) {
+  const [selectedUserId, setSelectedUserId] = useState<string>("");
+  const [taskTitle, setTaskTitle] = useState("");
+  const [xpAmount, setXpAmount] = useState(10);
+  const [loading, setLoading] = useState(false);
+
+  const handleAssign = async () => {
+    if (!selectedUserId || !taskTitle) return alert("Please fill all fields");
+    setLoading(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error("No session");
+
+      const res = await fetch("/api/admin/assign-xp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${session.access_token}`
+        },
+        body: JSON.stringify({
+          studentId: selectedUserId,
+          taskTitle,
+          xpAmount
+        })
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to assign");
+
+      alert(`Successfully awarded ${xpAmount} XP!`);
+      setTaskTitle("");
+      setXpAmount(10);
+    } catch (err: any) {
+      alert(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="glass-panel rounded-3xl p-8 border border-[var(--line)] shadow-xl mb-8">
+      <h2 className="text-xl font-black text-white uppercase font-orbitron mb-6 flex items-center gap-3">
+        <Shield className="w-5 h-5 text-[var(--gold)]" />
+        Direct XP Award
+      </h2>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <select 
+          value={selectedUserId} 
+          onChange={e => setSelectedUserId(e.target.value)} 
+          className={inputClass}
+        >
+          <option value="">Select Student...</option>
+          {users.map(u => <option key={u.id} value={u.id}>{u.handle || u.displayName}</option>)}
+        </select>
+        
+        <input 
+          placeholder="Task Title / Reason" 
+          value={taskTitle} 
+          onChange={e => setTaskTitle(e.target.value)} 
+          className={cn(inputClass, "md:col-span-2")} 
+        />
+        
+        <input 
+          type="number" 
+          min={10} 
+          max={30} 
+          value={xpAmount} 
+          onChange={e => {
+            let val = parseInt(e.target.value) || 10;
+            if (val > 30) val = 30;
+            if (val < 10) val = 10;
+            setXpAmount(val);
+          }} 
+          className={inputClass} 
+        />
+      </div>
+      
+      <button 
+        disabled={loading} 
+        onClick={handleAssign} 
+        className="mt-6 w-full bg-[var(--gold)] text-[var(--bg-0)] font-black py-4 rounded-2xl uppercase tracking-widest hover:bg-[var(--gold-muted)] disabled:opacity-50 transition-colors shadow-[0_0_20px_var(--glow-gold)]"
+      >
+        {loading ? "Transmitting Data..." : "Assign Task & Award XP"}
+      </button>
     </div>
   );
 }
@@ -311,10 +357,10 @@ function TaskEditor(props: {
   onDelete: () => void;
 }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+    <div className="rounded-3xl border border-[var(--line)] bg-[var(--bg-0)] p-6 shadow-lg">
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1">
-          <label className="block text-sm font-medium text-gray-400 mb-2">Title</label>
+          <label className="block text-[10px] font-black text-[var(--text-soft)] uppercase tracking-[0.2em] mb-2">Title</label>
           <input
             value={props.task.title}
             onChange={(e) => props.onChange({ ...props.task, title: e.target.value })}
@@ -322,36 +368,42 @@ function TaskEditor(props: {
           />
         </div>
         <button
-          className="text-xs font-semibold text-red-300 bg-red-500/10 hover:bg-red-500/15 border border-red-500/20 px-3 py-3 rounded-xl transition-colors inline-flex items-center gap-2 h-[46px]"
+          className="text-xs font-bold text-[#ff4d6d] bg-[#ff4d6d]/10 hover:bg-[#ff4d6d]/20 border border-[#ff4d6d]/20 px-3 py-3 rounded-2xl transition-colors inline-flex items-center gap-2 h-[56px]"
           onClick={props.onDelete}
+          aria-label="Delete Task"
         >
-          <Trash2 className="w-4 h-4" />
-          Delete
+          <Trash2 className="w-5 h-5" />
         </button>
       </div>
 
-      <div className="mt-4">
-        <label className="block text-sm font-medium text-gray-400 mb-2">Description</label>
+      <div className="mt-5">
+        <label className="block text-[10px] font-black text-[var(--text-soft)] uppercase tracking-[0.2em] mb-2">Description</label>
         <textarea
           value={props.task.description}
           onChange={(e) => props.onChange({ ...props.task, description: e.target.value })}
-          className={cn(inputClass, "min-h-[96px] resize-none")}
+          className={cn(inputClass, "min-h-[100px] resize-none")}
         />
       </div>
 
-      <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="mt-5 grid grid-cols-1 md:grid-cols-3 gap-5">
         <div>
-          <label className="block text-sm font-medium text-gray-400 mb-2">XP</label>
+          <label className="block text-[10px] font-black text-[var(--text-soft)] uppercase tracking-[0.2em] mb-2">XP Reward</label>
           <input
             type="number"
-            min={0}
+            min={10}
+            max={30}
             value={props.task.xp}
-            onChange={(e) => props.onChange({ ...props.task, xp: Number(e.target.value) })}
+            onChange={(e) => {
+              let val = parseInt(e.target.value, 10) || 10;
+              if (val > 30) val = 30;
+              if (val < 10) val = 10;
+              props.onChange({ ...props.task, xp: val });
+            }}
             className={inputClass}
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-400 mb-2">Deadline</label>
+          <label className="block text-[10px] font-black text-[var(--text-soft)] uppercase tracking-[0.2em] mb-2">Deadline</label>
           <input
             type="date"
             value={props.task.deadline}
@@ -360,7 +412,7 @@ function TaskEditor(props: {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-400 mb-2">Status</label>
+          <label className="block text-[10px] font-black text-[var(--text-soft)] uppercase tracking-[0.2em] mb-2">Status</label>
           <select
             value={props.task.status}
             onChange={(e) => props.onChange({ ...props.task, status: e.target.value as TaskStatus })}
@@ -377,6 +429,5 @@ function TaskEditor(props: {
   );
 }
 
-const inputClass =
-  "w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent transition-all";
+
 
