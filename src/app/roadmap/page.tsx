@@ -21,9 +21,9 @@ export default function RoadmapPage() {
   return (
     <div className="flex min-h-screen relative overflow-hidden">
       <Sidebar />
-      <main className="flex-1 lg:ml-52 p-4 pt-16 lg:pt-7 lg:pl-2 lg:pr-5 xl:pr-6 w-full overflow-x-hidden relative z-10">
-        <div className="w-full max-w-[1180px] mr-auto pb-24 lg:pb-20 progress-grid">
-          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-5 mb-10 xl:mb-14 pt-4 xl:pt-8">
+      <main className="dashboard-main">
+        <div className="dashboard-content progress-grid">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-7 xl:mb-8 pt-4 xl:pt-6">
             <div>
               <p className="text-[var(--gold)] font-black tracking-[0.3em] text-[10px] mb-3 uppercase flex items-center gap-2">
                 <Zap className="w-4 h-4 fill-[var(--gold)]" />
@@ -36,8 +36,8 @@ export default function RoadmapPage() {
                 The definitive path to mastery. Complete protocols and verify results.
               </p>
             </div>
-            <div className="flex items-center gap-4 glass-panel p-4">
-              <div className="w-11 h-11 hud-chip flex items-center justify-center shrink-0">
+            <div className="flex items-center gap-3 glass-panel p-3.5">
+              <div className="w-10 h-10 hud-chip flex items-center justify-center shrink-0">
                 <span className="text-[var(--gold)] font-black text-sm font-orbitron">XP</span>
               </div>
               <div className="flex flex-col">

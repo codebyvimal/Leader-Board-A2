@@ -11,40 +11,40 @@
 
 :root {
   /* === Deep Dark Gradient Palette === */
-  --bg-0: #07111a;
-  --bg-1: #0d1722;
-  --bg-2: #132130;
-  --bg-3: #1d3144;
+  --bg-0: #070d16;
+  --bg-1: #0d1521;
+  --bg-2: #121d2c;
+  --bg-3: #1a2940;
 
-  /* Cool progress-dashboard accents */
-  --gold: #66e3c4;
-  --gold-muted: #2ea388;
-  --gold-deep: #0c3c33;
-  --gold-light: #baf8eb;
+  /* Rich but restrained accent system */
+  --gold: #7aa2ff;
+  --gold-muted: #587bc6;
+  --gold-deep: #243a63;
+  --gold-light: #d3ddff;
 
   /* Text Colors */
-  --text-main: #e7f2f8;
-  --text-soft: #7f96a6;
+  --text-main: #e5ebf6;
+  --text-soft: #92a0b6;
 
   /* UI Elements */
-  --line: #1b3140;
-  --glass-bg: rgba(9, 17, 26, 0.76);
-  --glass-border: rgba(102, 227, 196, 0.14);
-  --surface-top: rgba(24, 44, 60, 0.92);
-  --surface-mid: rgba(12, 24, 35, 0.9);
-  --surface-low: rgba(7, 14, 22, 0.96);
-  --edge-highlight: rgba(186, 248, 235, 0.14);
-  --bevel-shadow: rgba(4, 10, 17, 0.92);
-  --frame-cut: 16px;
+  --line: #223247;
+  --glass-bg: rgba(11, 17, 26, 0.86);
+  --glass-border: rgba(122, 162, 255, 0.12);
+  --surface-top: rgba(21, 31, 46, 0.95);
+  --surface-mid: rgba(13, 21, 33, 0.94);
+  --surface-low: rgba(8, 13, 21, 0.98);
+  --edge-highlight: rgba(122, 162, 255, 0.08);
+  --bevel-shadow: rgba(3, 6, 10, 0.82);
+  --frame-cut: 10px;
 
   /* Effects */
-  --glow-gold: rgba(102, 227, 196, 0.22);
-  --backdrop-blur: 20px;
+  --glow-gold: rgba(122, 162, 255, 0.12);
+  --backdrop-blur: 16px;
 
   /* Grid system */
-  --grid-major: rgba(102, 227, 196, 0.12);
-  --grid-minor: rgba(102, 227, 196, 0.045);
-  --dot-color: #193241;
+  --grid-major: rgba(98, 123, 170, 0.16);
+  --grid-minor: rgba(98, 123, 170, 0.06);
+  --dot-color: #1b2940;
 }
 
 /* Soft border radius globally */
@@ -56,9 +56,9 @@ body {
   background-color: var(--bg-0);
   /* Dark gradient base + grid */
   background-image:
-    linear-gradient(140deg, rgba(186, 248, 235, 0.04) 0%, transparent 28%),
-    radial-gradient(circle at 50% 0%, rgba(55, 110, 122, 0.16) 0%, transparent 55%),
-    radial-gradient(circle at 80% 100%, rgba(35, 95, 116, 0.1) 0%, transparent 40%),
+    linear-gradient(180deg, rgba(26, 41, 64, 0.34) 0%, transparent 42%),
+    radial-gradient(circle at 50% 0%, rgba(72, 103, 160, 0.16) 0%, transparent 58%),
+    radial-gradient(circle at 80% 100%, rgba(34, 54, 85, 0.18) 0%, transparent 42%),
     linear-gradient(var(--grid-minor) 1px, transparent 1px),
     linear-gradient(90deg, var(--grid-minor) 1px, transparent 1px),
     linear-gradient(var(--grid-major) 1px, transparent 1px),
@@ -90,20 +90,19 @@ body {
     linear-gradient(90deg, var(--grid-major) 1px, transparent 1px);
   background-size: 24px 24px, 24px 24px, 120px 120px, 120px 120px;
   background-position: center center;
-  opacity: 0.9;
+  opacity: 0.58;
 }
 
 .profile-shell {
   background:
-    linear-gradient(180deg, rgba(20, 35, 49, 0.88) 0%, rgba(9, 17, 26, 0.94) 100%);
+    linear-gradient(180deg, rgba(18, 28, 42, 0.95) 0%, rgba(10, 15, 23, 0.98) 100%);
   border: 1px solid var(--line);
   box-shadow:
-    0 20px 40px rgba(0, 0, 0, 0.36),
-    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    0 18px 36px rgba(0, 0, 0, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.02);
   overflow: hidden;
 }
 
-/* Warm radial ambient glow — olive tinted */
 .shifting-bg {
   position: fixed;
   inset: 0;
@@ -111,10 +110,10 @@ body {
   background:
     radial-gradient(
       ellipse 600px 400px at var(--mouse-x, 50%) var(--mouse-y, 50%),
-      rgba(102, 227, 196, 0.05) 0%,
+      rgba(122, 162, 255, 0.03) 0%,
       transparent 100%
     );
-  transition: background 0.4s ease;
+  transition: background 0.35s ease;
   pointer-events: none;
 }
 
@@ -133,17 +132,17 @@ p, span, a, button, input, textarea, label, li {
 /* === Glass Panel === */
 @utility glass-panel {
   background:
-    linear-gradient(160deg, rgba(255, 255, 255, 0.03) 0%, transparent 30%),
+    linear-gradient(160deg, rgba(255, 255, 255, 0.02) 0%, transparent 24%),
     linear-gradient(180deg, var(--surface-top) 0%, var(--surface-mid) 45%, var(--surface-low) 100%);
   backdrop-filter: blur(var(--backdrop-blur));
   -webkit-backdrop-filter: blur(var(--backdrop-blur));
   border: 1px solid var(--line);
   box-shadow:
-    0 22px 44px rgba(0, 0, 0, 0.42),
-    10px 10px 0 var(--bevel-shadow),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 16px 30px rgba(0, 0, 0, 0.34),
+    6px 6px 0 var(--bevel-shadow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
     inset 1px 0 0 rgba(255, 255, 255, 0.02),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.28);
+    inset 0 -1px 0 rgba(0, 0, 0, 0.22);
   clip-path: polygon(
     0 0,
     calc(100% - var(--frame-cut)) 0,
@@ -161,14 +160,14 @@ p, span, a, button, input, textarea, label, li {
   position: absolute;
   inset: 1px;
   pointer-events: none;
-  border: 1px solid rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.015);
   clip-path: polygon(
     0 0,
-    calc(100% - 14px) 0,
-    100% 14px,
+    calc(100% - 8px) 0,
+    100% 8px,
     100% 100%,
-    14px 100%,
-    0 calc(100% - 14px)
+    8px 100%,
+    0 calc(100% - 8px)
   );
 }
 
@@ -178,69 +177,115 @@ p, span, a, button, input, textarea, label, li {
   inset: 0;
   pointer-events: none;
   background:
-    linear-gradient(135deg, var(--edge-highlight) 0%, transparent 24%),
-    linear-gradient(315deg, rgba(0, 0, 0, 0.18) 0%, transparent 20%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, transparent 16%);
+    linear-gradient(135deg, var(--edge-highlight) 0%, transparent 20%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, transparent 14%);
 }
 
 .panel-inset {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.025) 0%, rgba(0, 0, 0, 0.08) 100%);
-  border: 1px solid rgba(102, 227, 196, 0.16);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, rgba(0, 0, 0, 0.1) 100%);
+  border: 1px solid rgba(140, 162, 180, 0.12);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.04),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.24),
-    6px 6px 0 rgba(8, 12, 4, 0.8);
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.18),
+    4px 4px 0 rgba(6, 10, 16, 0.72);
   clip-path: polygon(
     0 0,
-    calc(100% - 12px) 0,
-    100% 12px,
+    calc(100% - 8px) 0,
+    100% 8px,
     100% 100%,
-    12px 100%,
-    0 calc(100% - 12px)
+    8px 100%,
+    0 calc(100% - 8px)
   );
 }
 
 .frame-cut {
   clip-path: polygon(
     0 0,
-    calc(100% - 14px) 0,
-    100% 14px,
+    calc(100% - 8px) 0,
+    100% 8px,
     100% 100%,
-    14px 100%,
-    0 calc(100% - 14px)
+    8px 100%,
+    0 calc(100% - 8px)
   );
 }
 
 .hud-chip {
-  background: linear-gradient(180deg, rgba(102, 227, 196, 0.14) 0%, rgba(102, 227, 196, 0.06) 100%);
-  border: 1px solid rgba(102, 227, 196, 0.2);
+  background: linear-gradient(180deg, rgba(122, 162, 255, 0.14) 0%, rgba(122, 162, 255, 0.06) 100%);
+  border: 1px solid rgba(122, 162, 255, 0.18);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.04),
-    4px 4px 0 rgba(8, 12, 4, 0.7);
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    3px 3px 0 rgba(6, 10, 16, 0.58);
   clip-path: polygon(
     0 0,
-    calc(100% - 10px) 0,
-    100% 10px,
+    calc(100% - 8px) 0,
+    100% 8px,
     100% 100%,
-    10px 100%,
-    0 calc(100% - 10px)
+    8px 100%,
+    0 calc(100% - 8px)
   );
 }
 
 .control-surface {
-  background: linear-gradient(180deg, rgba(29, 49, 68, 0.78) 0%, rgba(7, 14, 22, 0.92) 100%);
+  background: linear-gradient(180deg, rgba(19, 30, 45, 0.94) 0%, rgba(10, 15, 23, 0.98) 100%);
   border: 1px solid var(--line);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.03),
-    5px 5px 0 rgba(8, 12, 4, 0.82);
+    inset 0 1px 0 rgba(255, 255, 255, 0.02),
+    3px 3px 0 rgba(6, 10, 16, 0.64);
   clip-path: polygon(
     0 0,
-    calc(100% - 10px) 0,
-    100% 10px,
+    calc(100% - 8px) 0,
+    100% 8px,
     100% 100%,
-    10px 100%,
-    0 calc(100% - 10px)
+    8px 100%,
+    0 calc(100% - 8px)
   );
+}
+
+.dashboard-main {
+  flex: 1;
+  width: 100%;
+  position: relative;
+  z-index: 10;
+  min-height: 100vh;
+  overflow-x: hidden;
+  padding: 1rem;
+  padding-top: 4rem;
+  padding-bottom: 5.25rem;
+}
+
+.dashboard-content {
+  width: 100%;
+  max-width: 1440px;
+  margin-left: 0;
+  margin-right: auto;
+  padding-bottom: 5rem;
+}
+
+@media (min-width: 1024px) {
+  .dashboard-main {
+    margin-left: 10.2rem;
+    height: 100vh;
+    overflow-y: auto;
+    padding-top: 1.5rem;
+    padding-left: 0;
+    padding-right: 1rem;
+  }
+
+  .dashboard-content {
+    padding-bottom: 4rem;
+  }
+}
+
+@media (max-width: 1023px) {
+  .dashboard-main {
+    padding: 1.25rem 0.75rem 6.5rem;
+    padding-bottom: calc(6.5rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .dashboard-content {
+    max-width: none;
+    padding-bottom: 1rem;
+  }
 }
 
 .progress-grid {
@@ -256,13 +301,19 @@ p, span, a, button, input, textarea, label, li {
     linear-gradient(var(--grid-minor) 1px, transparent 1px),
     linear-gradient(90deg, var(--grid-minor) 1px, transparent 1px);
   background-size: 18px 18px;
-  opacity: 0.18;
+  opacity: 0.1;
   mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.7), transparent);
 }
 
 .interactive-frame {
   position: relative;
   overflow: hidden;
+  transition:
+    transform 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 180ms ease,
+    background-color 180ms ease,
+    color 180ms ease,
+    box-shadow 180ms ease;
 }
 
 .interactive-frame::before {
@@ -270,13 +321,17 @@ p, span, a, button, input, textarea, label, li {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.045) 0%, transparent 28%);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.025) 0%, transparent 24%);
   opacity: 0;
-  transition: opacity 0.25s ease;
+  transition: opacity 0.18s ease;
 }
 
 .interactive-frame:hover::before {
   opacity: 1;
+}
+
+.interactive-frame:hover {
+  transform: translateY(-1px);
 }
 
 @utility glow-border {
@@ -285,13 +340,13 @@ p, span, a, button, input, textarea, label, li {
 }
 
 @utility text-gradient {
-  background: linear-gradient(135deg, #ffffff 0%, var(--gold) 50%, var(--gold-light) 100%);
+  background: linear-gradient(135deg, #f7f9ff 0%, #d7e0ff 52%, #94aef2 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 @utility glow-gold-shadow {
-  box-shadow: 0 0 35px var(--glow-gold);
+  box-shadow: 0 0 14px var(--glow-gold);
 }
 
 /* Hide scrollbar */
@@ -319,7 +374,37 @@ p, span, a, button, input, textarea, label, li {
 /* === Mobile bottom nav spacing === */
 @media (max-width: 1023px) {
   body {
-    padding-bottom: 72px; /* room for fixed bottom bar */
+    padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px)); /* room for fixed bottom bar + safe area */
+  }
+}
+
+/* === Mobile-specific refinements === */
+@media (max-width: 639px) {
+  /* Tighter roadmap timeline on small phones */
+  .roadmap-timeline-task {
+    margin-left: 3rem !important;
+  }
+
+  .roadmap-timeline-node {
+    left: -33px !important;
+    width: 2rem !important;
+    height: 2rem !important;
+  }
+
+  /* Reduce font sizes on very small screens */
+  h1 {
+    font-size: clamp(1.5rem, 8vw, 3rem) !important;
+  }
+
+  /* Better touch targets */
+  button, a {
+    min-height: 44px;
+  }
+
+  /* Prevent horizontal overflow */
+  .glass-panel {
+    max-width: 100%;
+    overflow-x: hidden;
   }
 }
 

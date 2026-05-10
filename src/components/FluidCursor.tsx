@@ -5,8 +5,19 @@ import { motion } from "framer-motion";
 
 export function FluidCursor() {
   const [mousePosition, setMousePosition] = useState({ x: -200, y: -200 });
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
 
   useEffect(() => {
+    // Detect touch-only devices
+    const mql = window.matchMedia("(hover: none)");
+    setIsTouchDevice(mql.matches);
+    const onChange = (e: MediaQueryListEvent) => setIsTouchDevice(e.matches);
+    mql.addEventListener("change", onChange);
+    return () => mql.removeEventListener("change", onChange);
+  }, []);
+
+  useEffect(() => {
+    if (isTouchDevice) return;
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
 
@@ -17,7 +28,9 @@ export function FluidCursor() {
 
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
+  }, [isTouchDevice]);
+
+  if (isTouchDevice) return null;
 
   return (
     <>
@@ -29,18 +42,19 @@ export function FluidCursor() {
       </svg>
 
       <motion.div
-        className="fixed pointer-events-none z-50 rounded-full"
+        className="fixed pointer-events-none z-30 rounded-full"
         animate={{
-          x: mousePosition.x - 100,
-          y: mousePosition.y - 100,
+          x: mousePosition.x - 80,
+          y: mousePosition.y - 80,
         }}
-        transition={{ type: "tween", ease: "circOut", duration: 0.2 }}
+        transition={{ type: "tween", ease: "circOut", duration: 0.18 }}
         style={{
-          width: "200px",
-          height: "200px",
+          width: "160px",
+          height: "160px",
           backdropFilter: "url(#water-distortion)",
           WebkitBackdropFilter: "url(#water-distortion)",
-          background: "radial-gradient(circle, rgba(100, 255, 218, 0.03) 0%, transparent 70%)",
+          opacity: 0.35,
+          background: "radial-gradient(circle, rgba(255, 255, 255, 0.02) 0%, transparent 72%)",
         }}
       />
     </>

@@ -43,9 +43,9 @@ export function TaskDetailsModal({ task, isOpen, onClose, onSubmit }: TaskDetail
             initial={{ opacity: 0, scale: 0.92, y: 30 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.92, y: 30 }}
-            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-xl z-[70] p-4"
+            className="fixed inset-0 sm:inset-auto sm:left-1/2 sm:top-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 w-full sm:max-w-xl z-[70] sm:p-4 overflow-y-auto"
           >
-            <div className="glass-panel p-8 relative overflow-hidden border border-[var(--line)] shadow-[0_0_50px_rgba(0,0,0,0.6)]">
+            <div className="glass-panel p-6 sm:p-8 relative overflow-hidden border border-[var(--line)] shadow-[0_0_50px_rgba(0,0,0,0.6)] min-h-screen sm:min-h-0">
               {/* Top accent line */}
               <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[var(--gold)] to-transparent opacity-60" />
               <div className="absolute -top-24 -right-24 w-48 h-48 bg-[var(--gold)] opacity-5 blur-[60px] pointer-events-none" />

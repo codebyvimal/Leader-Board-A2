@@ -45,8 +45,8 @@ export default function PublicProfilePage({ params }: { params: Promise<{ handle
     <div className="flex min-h-screen relative overflow-hidden">
       <Sidebar />
 
-      <main className="flex-1 lg:ml-56 p-4 pt-20 lg:pt-7 lg:pl-4 lg:pr-5 xl:pr-6 w-full overflow-x-hidden relative z-10">
-        <div className="w-full max-w-[1000px] mr-auto pb-20 pt-4 xl:pt-10">
+      <main className="dashboard-main lg:pt-7">
+        <div className="dashboard-content max-w-[1000px] pt-4 xl:pt-10">
 
           <Link
             href="/leaderboard"

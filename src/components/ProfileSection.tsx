@@ -87,20 +87,20 @@ export function ProfileSection() {
 
   return (
     <section id="profile">
-      <header className="mb-10 lg:mb-14 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-6 lg:gap-8">
+      <header className="mb-8 lg:mb-10 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-5 lg:gap-6">
         <div>
           <p className="text-[var(--gold)] font-black tracking-[0.25em] text-[10px] lg:text-xs mb-3 uppercase flex items-center gap-2">
             <User className="w-4 h-4" />
             Identity
           </p>
-          <h1 className="text-4xl lg:text-5xl font-black tracking-tight text-gradient font-orbitron uppercase">
+          <h1 className="text-[2.7rem] lg:text-[4rem] font-black tracking-tight text-gradient font-orbitron uppercase leading-none">
             Profile
           </h1>
-          <p className="text-[var(--text-soft)] mt-4 lg:mt-5 max-w-2xl text-sm lg:text-[16px] font-medium leading-relaxed">
+          <p className="text-[var(--text-soft)] mt-3 lg:mt-4 max-w-2xl text-sm lg:text-[15px] font-medium leading-relaxed">
             Update your footprint. Your identity is defined by your consistency and verification history.
           </p>
         </div>
-        <div className="flex items-center gap-2 text-[10px] font-black text-[var(--gold)] hud-chip px-5 py-3 font-orbitron uppercase tracking-widest">
+        <div className="flex items-center gap-2 text-[10px] font-black text-[var(--gold)] hud-chip px-4 py-2.5 font-orbitron uppercase tracking-widest">
           <ShieldCheck className="w-4 h-4" />
           Sync: Online
         </div>
@@ -108,7 +108,7 @@ export function ProfileSection() {
 
       <div className="profile-shell overflow-hidden">
         {/* Cover */}
-        <div className="relative h-48 md:h-64 bg-white/[0.02]">
+        <div className="relative h-44 md:h-60 bg-white/[0.02]">
           {profile.coverUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -121,7 +121,7 @@ export function ProfileSection() {
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-0)] to-transparent" />
 
-          <label className="absolute top-6 right-6 inline-flex items-center gap-2 cursor-pointer text-[10px] font-black text-white control-surface hover:text-[var(--gold)] px-5 py-3 backdrop-blur-xl transition-all font-orbitron uppercase tracking-widest group">
+          <label className="absolute top-5 right-5 inline-flex items-center gap-2 cursor-pointer text-[10px] font-black text-white control-surface hover:text-[var(--gold)] px-4 py-2.5 backdrop-blur-xl transition-all font-orbitron uppercase tracking-widest group">
             {uploadingCover ? (
               <span className="animate-pulse">Uploading...</span>
             ) : (
@@ -139,9 +139,9 @@ export function ProfileSection() {
           </label>
 
           {/* Avatar */}
-          <div className="absolute left-8 md:left-10 -bottom-12 md:-bottom-16">
+          <div className="absolute left-6 md:left-8 -bottom-12 md:-bottom-14">
             <div className="relative group">
-              <div className="w-24 h-24 md:w-32 md:h-32 border-2 border-[var(--line)] bg-[var(--bg-0)] shadow-[0_0_30px_rgba(0,0,0,0.5)] overflow-hidden flex items-center justify-center group-hover:border-[var(--gold)] transition-colors duration-500">
+              <div className="w-24 h-24 md:w-28 md:h-28 border-2 border-[var(--line)] bg-[var(--bg-0)] shadow-[0_0_30px_rgba(0,0,0,0.5)] overflow-hidden flex items-center justify-center group-hover:border-[var(--gold)] transition-colors duration-500">
                 {profile.avatarUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={profile.avatarUrl} alt="Profile avatar" className="w-full h-full object-cover" />
@@ -153,7 +153,7 @@ export function ProfileSection() {
                 <div className="absolute inset-0 bg-[var(--gold)]/10 opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
 
-              <label className="absolute -right-3 -bottom-3 w-10 h-10 hud-chip text-[var(--bg-0)] flex items-center justify-center cursor-pointer transition-all hover:scale-110 active:scale-95 z-10">
+              <label className="absolute -right-2 -bottom-2 w-9 h-9 hud-chip text-[var(--bg-0)] flex items-center justify-center cursor-pointer transition-all hover:scale-110 active:scale-95 z-10">
                 {uploadingAvatar ? (
                   <div className="w-4 h-4 border-2 border-[var(--bg-0)] border-t-transparent animate-spin" />
                 ) : (
@@ -173,38 +173,38 @@ export function ProfileSection() {
         </div>
 
         {/* Body */}
-        <div className="pt-20 md:pt-24 px-8 md:px-10 pb-10">
-          <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-start">
+        <div className="pt-18 md:pt-20 px-6 md:px-8 pb-8">
+          <div className="flex flex-col lg:flex-row gap-10 lg:gap-12 items-start">
             {/* Public card */}
             <div className="flex-1">
               <div className="flex items-start justify-between gap-6">
                 <div className="min-w-0">
-                  <div className="text-3xl font-black text-white truncate font-orbitron tracking-tight flex items-center gap-4">
+                  <div className="text-[2rem] md:text-[2.35rem] font-black text-white truncate font-orbitron tracking-tight flex items-center gap-3">
                     {profile.displayName}
-                    <div className="w-2 h-2 bg-[var(--gold)] shadow-[0_0_8px_var(--glow-gold)] animate-pulse" />
+                    <div className="w-2 h-2 bg-[var(--gold)]" />
                   </div>
-                  <div className="text-[var(--gold)] mt-2 font-black text-xs uppercase tracking-[0.2em] opacity-60">
+                  <div className="text-[var(--gold)] mt-1.5 font-black text-[11px] uppercase tracking-[0.2em] opacity-60">
                     @{profile.handle}
                   </div>
-                  <div className="text-[17px] text-white mt-6 font-bold leading-relaxed">
+                  <div className="text-[15px] md:text-[16px] text-white mt-5 font-bold leading-relaxed">
                     {profile.headline || "No headline set"}
                   </div>
                 </div>
               </div>
 
-              <div className="mt-8 text-[var(--text-soft)] leading-relaxed max-w-2xl font-medium text-[15px]">
+              <div className="mt-6 text-[var(--text-soft)] leading-relaxed max-w-2xl font-medium text-[14px] md:text-[15px]">
                 {profile.bio || "No bio provided."}
               </div>
 
-              <div className="mt-10 flex flex-wrap gap-4 text-xs font-bold uppercase tracking-widest">
+              <div className="mt-8 flex flex-wrap gap-3 text-[11px] font-bold uppercase tracking-widest">
                 {profile.location && (
-                  <div className="inline-flex items-center gap-3 control-surface px-5 py-3 text-[var(--text-soft)]">
+                  <div className="inline-flex items-center gap-3 control-surface px-4 py-2.5 text-[var(--text-soft)]">
                     <MapPin className="w-4 h-4 text-[var(--gold)]" />
                     {profile.location}
                   </div>
                 )}
                 {profile.website && (
-                  <div className="inline-flex items-center gap-3 control-surface px-5 py-3 text-[var(--text-soft)] hover:text-white hover:border-[var(--gold)]/30 transition-all cursor-pointer">
+                  <div className="inline-flex items-center gap-3 control-surface px-4 py-2.5 text-[var(--text-soft)] hover:text-white hover:border-[var(--gold)]/30 transition-all cursor-pointer">
                     <LinkIcon className="w-4 h-4 text-[var(--gold)]" />
                     <span className="truncate max-w-[280px]">{profile.website}</span>
                   </div>
@@ -213,14 +213,14 @@ export function ProfileSection() {
             </div>
 
             {/* Edit form */}
-            <div className="w-full lg:w-[440px] space-y-10 shrink-0">
+            <div className="w-full lg:w-[400px] space-y-8 shrink-0">
               <div>
-                <h3 className="text-xs font-black text-white mb-6 font-orbitron uppercase tracking-[0.2em] flex items-center gap-3">
+                <h3 className="text-xs font-black text-white mb-5 font-orbitron uppercase tracking-[0.2em] flex items-center gap-3">
                   <Zap className="w-4 h-4 text-[var(--gold)] fill-[var(--gold)]" />
                   Edit Identity
                 </h3>
 
-                <div className="space-y-6">
+                <div className="space-y-5">
                   <Field label="Display Name">
                     <input
                       value={profile.displayName}
@@ -249,7 +249,7 @@ export function ProfileSection() {
                       className={cn(inputClass, "min-h-[120px] resize-none")}
                     />
                   </Field>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <Field label="Location">
                       <input
                         value={profile.location ?? ""}
@@ -266,11 +266,11 @@ export function ProfileSection() {
                     </Field>
                   </div>
 
-                  <div className="pt-4 flex items-center justify-between gap-4">
+                  <div className="pt-3 flex items-center justify-between gap-4">
                     <button
                       onClick={handleSave}
                       disabled={saving || !profile.id}
-                      className="flex items-center gap-2 hud-chip text-[var(--bg-0)] px-6 py-3 font-black uppercase tracking-widest text-xs transition-all disabled:opacity-50"
+                      className="flex items-center gap-2 hud-chip text-[var(--bg-0)] px-5 py-2.5 font-black uppercase tracking-widest text-xs transition-all disabled:opacity-50"
                     >
                       <Save className="w-4 h-4" />
                       {saving ? "Saving..." : "Save Profile"}
@@ -301,4 +301,4 @@ function Field(props: { label: string; children: React.ReactNode }) {
 }
 
 const inputClass =
-  "w-full bg-[var(--bg-0)]/60 border border-[var(--line)] py-4 px-5 text-white placeholder-[var(--text-soft)]/40 focus:outline-none focus:ring-2 focus:ring-[var(--gold)]/20 focus:border-[var(--gold)] transition-all font-bold text-[15px]";
+  "w-full bg-[var(--bg-0)]/60 border border-[var(--line)] py-3.5 px-4 text-white placeholder-[var(--text-soft)]/40 focus:outline-none focus:ring-2 focus:ring-[var(--gold)]/12 focus:border-[var(--gold)] transition-all font-bold text-[14px]";
