@@ -35,7 +35,7 @@ export interface ActivityEvent {
   userId: string;
   userName: string;
   userAvatar: string;
-  type: 'task_completed' | 'proof_submitted' | 'streak_milestone' | 'rank_change';
+  type: 'task_completed' | 'proof_submitted' | 'streak_milestone' | 'rank_change' | 'task_assigned';
   title: string;
   detail?: string;
   timestamp: string;
@@ -156,6 +156,18 @@ export async function getCurrentProfile(): Promise<PublicProfile | null> {
     coverUrl: data.cover_url,
     xp: data.xp || 0,
   };
+}
+
+export async function getRoadmapNodes() {
+  const { data, error } = await supabase.from("roadmap_nodes").select("*");
+  if (error || !data) return [];
+  return data;
+}
+
+export async function getRoadmapEdges() {
+  const { data, error } = await supabase.from("roadmap_edges").select("*");
+  if (error || !data) return [];
+  return data;
 }
 
 // Temporary fallback empty data for synchronous initial renders if needed

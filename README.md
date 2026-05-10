@@ -54,5 +54,3 @@ Run the provided SQL script in your Supabase SQL Editor to generate the followin
 ```bash
 npm install
 npm run dev
-```
-Open [http://localhost:3000](http://localhost:3000) with your browser.

@@ -4,7 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import { Sidebar } from "@/components/Sidebar";
 import { Section, Task, TaskStatus, getRoadmap } from "@/lib/data";
 import { cn } from "@/lib/utils";
-import { Check, Plus, Shield, Trash2, Save } from "lucide-react";
+import { Check, Plus, Shield, Trash2, Save, Layout, Target } from "lucide-react";
+import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 
 function uid(prefix: string) {
@@ -82,8 +83,8 @@ export default function AdminPage() {
     <div className="flex min-h-screen">
       <Sidebar />
 
-      <main className="flex-1 lg:ml-64 p-4 pt-20 lg:pt-8 lg:p-8 lg:pl-12 lg:pr-12 w-full overflow-x-hidden">
-        <div className="max-w-7xl mx-auto">
+      <main className="dashboard-main">
+        <div className="dashboard-content pt-4 xl:pt-6">
           <header className="mb-8 lg:mb-10 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 lg:gap-8">
             <div>
               <p className="text-[var(--gold)] font-black tracking-widest text-xs lg:text-sm mb-2 font-orbitron uppercase">Protocol Control</p>
@@ -107,6 +108,43 @@ export default function AdminPage() {
             </section>
           ) : (
             <>
+              {/* Feature Launchers */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <Link
+                  href="/admin/roadmap-creator"
+                  className="glass-panel p-6 border border-[var(--line)] hover:border-[var(--gold)]/40 transition-all group relative overflow-hidden"
+                >
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--gold)] opacity-5 blur-[40px] group-hover:opacity-10 transition-opacity pointer-events-none" />
+                  <div className="flex items-center gap-4 mb-3">
+                    <div className="w-12 h-12 bg-[var(--gold)]/10 border border-[var(--gold)]/20 flex items-center justify-center shrink-0">
+                      <Layout className="w-6 h-6 text-[var(--gold)]" />
+                    </div>
+                    <div>
+                      <h2 className="text-lg font-black text-white font-orbitron uppercase tracking-widest">Roadmap Creator</h2>
+                      <p className="text-[10px] text-[var(--text-soft)] font-bold uppercase tracking-[0.2em] mt-1">Interactive Canvas</p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-[var(--text-soft)] font-medium">Build immersive, node-based roadmaps with drag-and-drop mechanics.</p>
+                </Link>
+
+                <Link
+                  href="/admin/task-manager"
+                  className="glass-panel p-6 border border-[var(--line)] hover:border-[var(--gold)]/40 transition-all group relative overflow-hidden"
+                >
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--gold)] opacity-5 blur-[40px] group-hover:opacity-10 transition-opacity pointer-events-none" />
+                  <div className="flex items-center gap-4 mb-3">
+                    <div className="w-12 h-12 bg-[var(--gold)]/10 border border-[var(--gold)]/20 flex items-center justify-center shrink-0">
+                      <Target className="w-6 h-6 text-[var(--gold)]" />
+                    </div>
+                    <div>
+                      <h2 className="text-lg font-black text-white font-orbitron uppercase tracking-widest">Task Manager</h2>
+                      <p className="text-[10px] text-[var(--text-soft)] font-bold uppercase tracking-[0.2em] mt-1">Advanced Assignment</p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-[var(--text-soft)] font-medium">Create, assign, and manage multi-layered tasks for students or teams.</p>
+                </Link>
+              </div>
+
               <StudentManager users={users} />
 
               <section className="grid grid-cols-1 lg:grid-cols-[360px_1fr] gap-8 mt-8">

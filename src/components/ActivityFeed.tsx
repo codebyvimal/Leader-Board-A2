@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { ActivityEvent } from "@/lib/data";
 import Link from "next/link";
-import { Award, CheckCircle2, Flame, ShieldCheck, Zap } from "lucide-react";
+import { Award, CheckCircle2, Flame, ShieldCheck, Zap, Target } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ActivityFeedProps {
@@ -16,6 +16,7 @@ function iconForType(type: ActivityEvent["type"]) {
     case "proof_submitted":  return ShieldCheck;
     case "streak_milestone": return Flame;
     case "rank_change":      return Award;
+    case "task_assigned":    return Target;
   }
 }
 
@@ -29,6 +30,8 @@ function accentForType(type: ActivityEvent["type"]) {
       return "text-amber-600 bg-amber-700/10 border-amber-700/20";
     case "rank_change":
       return "text-[var(--text-main)] bg-white/5 border-[var(--line)]";
+    case "task_assigned":
+      return "text-[var(--gold)] bg-[var(--gold)]/5 border-[var(--gold)]/30 border-dashed";
   }
 }
 
