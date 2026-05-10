@@ -20,6 +20,7 @@ export default function RoadmapPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [xp, setXp] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     async function loadData() {
@@ -148,7 +149,43 @@ export default function RoadmapPage() {
         task={selectedTask}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onSubmit={(taskId, url) => console.log(`Proof for ${taskId}: ${url}`)}
+        onSubmit={async (taskId, url) => {
+          setIsSubmitting(true);
+          try {
+            const { supabase } = await import("@/lib/supabase");
+            const { data: { session } } = await supabase.auth.getSession();
+            
+            if (!session) {
+              alert("Authentication required");
+              return;
+            }
+
+            const res = await fetch("/api/tasks/submit", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${session.access_token}`
+              },
+              body: JSON.stringify({ taskId, proofUrl: url })
+            });
+
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Failed to submit proof");
+            
+            alert(`Success! Earned +${data.awardedXp} XP`);
+            setXp(data.newTotalXp);
+            setIsModalOpen(false);
+            
+            // Optionally, we could update the node's status to 'completed' locally here
+            setNodes((nds) => nds.map((n) => n.id === taskId ? { ...n, data: { ...n.data, status: 'completed' } } : n));
+            
+          } catch (error: any) {
+            console.error(error);
+            alert(error.message);
+          } finally {
+            setIsSubmitting(false);
+          }
+        }}
       />
     </div>
   );

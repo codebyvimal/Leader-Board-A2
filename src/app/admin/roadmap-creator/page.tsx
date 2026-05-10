@@ -190,6 +190,14 @@ export default function RoadmapCreatorPage() {
     setNodes((nds) => [...nds, newNode]);
   }, [setNodes]);
 
+  const deleteSelectedNode = useCallback(() => {
+    if (selectedNodeId) {
+      setNodes((nds) => nds.filter((n) => n.id !== selectedNodeId));
+      setEdges((eds) => eds.filter((e) => e.source !== selectedNodeId && e.target !== selectedNodeId));
+      setSelectedNodeId(null);
+    }
+  }, [selectedNodeId, setNodes, setEdges]);
+
   return (
     <div className="flex h-screen overflow-hidden bg-[var(--bg-0)]">
       <Sidebar />
@@ -229,8 +237,10 @@ export default function RoadmapCreatorPage() {
           </div>
         </header>
 
-        {/* Canvas Area */}
-        <div className="flex-1 relative w-full h-full">
+        {/* Main Content Area */}
+        <div className="flex-1 flex overflow-hidden">
+          {/* Canvas Area */}
+          <div className="flex-1 relative w-full h-full border-r border-[var(--line)]">
           <ReactFlow
             nodes={nodes}
             edges={edges}
@@ -294,24 +304,33 @@ export default function RoadmapCreatorPage() {
                 <button className="p-3 text-[var(--text-soft)] hover:text-white hover:bg-white/5 transition-all">
                   <Redo2 className="w-5 h-5" />
                 </button>
-                <button className="p-3 text-[#cc5555] hover:bg-[#cc5555]/10 transition-all mt-1">
+                <button 
+                  onClick={deleteSelectedNode}
+                  disabled={!selectedNodeId}
+                  className={cn(
+                    "p-3 transition-all mt-1",
+                    selectedNodeId ? "text-[#cc5555] hover:bg-[#cc5555]/10" : "text-gray-600 cursor-not-allowed"
+                  )}
+                >
                   <Trash2 className="w-5 h-5" />
                 </button>
               </div>
             </Panel>
+          </ReactFlow>
+        </div>
 
-            {/* Properties Panel (Right) */}
-            <Panel position="top-right" className="m-4 lg:m-6 hidden xl:block w-80">
-              <div className="glass-panel border border-[var(--line)] p-5 shadow-2xl h-[calc(100vh-140px)] overflow-y-auto scrollbar-hide flex flex-col">
-                <h3 className="text-xs font-black text-white font-orbitron uppercase tracking-widest mb-4 flex items-center gap-2">
-                  <Rocket className="w-4 h-4 text-[var(--gold)]" /> Node Properties
-                </h3>
-                
-                {!selectedNode ? (
-                  <div className="text-[11px] text-[var(--text-soft)] font-medium leading-relaxed flex-1 flex items-center justify-center text-center border-2 border-dashed border-[var(--line)] p-6">
-                    Select a node on the canvas to configure its parameters, assign XP rewards, set deadlines, and define prerequisites.
-                  </div>
-                ) : (
+        {/* Properties Sidebar (Right) */}
+        <div className="hidden xl:flex flex-col w-80 bg-[var(--bg-1)] border-l border-[var(--line)] h-full">
+          <div className="p-5 flex flex-col h-full overflow-y-auto custom-scrollbar">
+            <h3 className="text-xs font-black text-white font-orbitron uppercase tracking-widest mb-6 flex items-center gap-2">
+              <Rocket className="w-4 h-4 text-[var(--gold)]" /> Node Properties
+            </h3>
+            
+            {!selectedNode ? (
+              <div className="text-[11px] text-[var(--text-soft)] font-medium leading-relaxed flex-1 flex items-center justify-center text-center border-2 border-dashed border-[var(--line)] p-6 bg-[var(--bg-0)]/50">
+                Select a node on the canvas to configure its parameters, assign XP rewards, set deadlines, and define prerequisites.
+              </div>
+            ) : (
                   <div className="space-y-5 animate-in fade-in slide-in-from-right-4 duration-300">
                     <div>
                       <label className="block text-[9px] font-black text-[var(--text-soft)] uppercase tracking-[0.2em] mb-1.5">Node Title</label>
@@ -390,12 +409,11 @@ export default function RoadmapCreatorPage() {
                       />
                     </div>
 
-                  </div>
-                )}
               </div>
-            </Panel>
-          </ReactFlow>
+            )}
+          </div>
         </div>
+      </div>
       </main>
     </div>
   );
