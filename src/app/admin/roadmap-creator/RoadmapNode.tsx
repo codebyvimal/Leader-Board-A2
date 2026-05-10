@@ -13,6 +13,7 @@ interface RoadmapNodeData {
   deadline: string;
   status: TaskStatus;
   difficulty?: "Easy" | "Medium" | "Hard" | "Elite";
+  color?: string;
 }
 
 const RoadmapNode = memo(({ data, selected }: { data: RoadmapNodeData; selected: boolean }) => {
