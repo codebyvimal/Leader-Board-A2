@@ -11,31 +11,40 @@
 
 :root {
   /* === Deep Dark Gradient Palette === */
-  --bg-0: #080c04;
-  --bg-1: #0f1508;
-  --bg-2: #171f0e;
+  --bg-0: #07111a;
+  --bg-1: #0d1722;
+  --bg-2: #132130;
+  --bg-3: #1d3144;
 
-  /* Olive / Military Green Accents */
-  --gold: #7fb04a;
-  --gold-muted: #5a8032;
-  --gold-deep: #1a2a0a;
-  --gold-light: #a8d475;
+  /* Cool progress-dashboard accents */
+  --gold: #66e3c4;
+  --gold-muted: #2ea388;
+  --gold-deep: #0c3c33;
+  --gold-light: #baf8eb;
 
   /* Text Colors */
-  --text-main: #e4ebd8;
-  --text-soft: #6e7d5a;
+  --text-main: #e7f2f8;
+  --text-soft: #7f96a6;
 
   /* UI Elements */
-  --line: #1e2b12;
-  --glass-bg: rgba(10, 16, 5, 0.72);
-  --glass-border: rgba(127, 176, 74, 0.14);
+  --line: #1b3140;
+  --glass-bg: rgba(9, 17, 26, 0.76);
+  --glass-border: rgba(102, 227, 196, 0.14);
+  --surface-top: rgba(24, 44, 60, 0.92);
+  --surface-mid: rgba(12, 24, 35, 0.9);
+  --surface-low: rgba(7, 14, 22, 0.96);
+  --edge-highlight: rgba(186, 248, 235, 0.14);
+  --bevel-shadow: rgba(4, 10, 17, 0.92);
+  --frame-cut: 16px;
 
   /* Effects */
-  --glow-gold: rgba(127, 176, 74, 0.22);
+  --glow-gold: rgba(102, 227, 196, 0.22);
   --backdrop-blur: 20px;
 
-  /* Dot grid color */
-  --dot-color: #253900;
+  /* Grid system */
+  --grid-major: rgba(102, 227, 196, 0.12);
+  --grid-minor: rgba(102, 227, 196, 0.045);
+  --dot-color: #193241;
 }
 
 /* Soft border radius globally */
@@ -45,33 +54,64 @@
 
 body {
   background-color: var(--bg-0);
-  /* Dark gradient base + dot grid */
+  /* Dark gradient base + grid */
   background-image:
-    radial-gradient(circle at 50% 0%, rgba(37, 57, 0, 0.18) 0%, transparent 55%),
-    radial-gradient(circle at 80% 100%, rgba(37, 57, 0, 0.10) 0%, transparent 40%),
+    linear-gradient(140deg, rgba(186, 248, 235, 0.04) 0%, transparent 28%),
+    radial-gradient(circle at 50% 0%, rgba(55, 110, 122, 0.16) 0%, transparent 55%),
+    radial-gradient(circle at 80% 100%, rgba(35, 95, 116, 0.1) 0%, transparent 40%),
+    linear-gradient(var(--grid-minor) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-minor) 1px, transparent 1px),
+    linear-gradient(var(--grid-major) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-major) 1px, transparent 1px),
     radial-gradient(circle, var(--dot-color) 1.2px, transparent 1.2px);
-  background-size: 100% 100%, 100% 100%, 28px 28px;
+  background-size: 100% 100%, 100% 100%, 100% 100%, 24px 24px, 24px 24px, 120px 120px, 120px 120px, 24px 24px;
   background-position: center center;
   background-attachment: fixed;
   color: var(--text-main);
   font-family: var(--font-space), 'Inter', sans-serif;
   min-height: 100vh;
   position: relative;
+  isolation: isolate;
   overflow-x: hidden;
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+.app-grid {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(var(--grid-minor) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-minor) 1px, transparent 1px),
+    linear-gradient(var(--grid-major) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-major) 1px, transparent 1px);
+  background-size: 24px 24px, 24px 24px, 120px 120px, 120px 120px;
+  background-position: center center;
+  opacity: 0.9;
+}
+
+.profile-shell {
+  background:
+    linear-gradient(180deg, rgba(20, 35, 49, 0.88) 0%, rgba(9, 17, 26, 0.94) 100%);
+  border: 1px solid var(--line);
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.36),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  overflow: hidden;
+}
+
 /* Warm radial ambient glow — olive tinted */
 .shifting-bg {
   position: fixed;
   inset: 0;
-  z-index: -1;
+  z-index: 1;
   background:
     radial-gradient(
       ellipse 600px 400px at var(--mouse-x, 50%) var(--mouse-y, 50%),
-      rgba(127, 176, 74, 0.045) 0%,
+      rgba(102, 227, 196, 0.05) 0%,
       transparent 100%
     );
   transition: background 0.4s ease;
@@ -92,17 +132,151 @@ p, span, a, button, input, textarea, label, li {
 
 /* === Glass Panel === */
 @utility glass-panel {
-  background: linear-gradient(
-    160deg,
-    rgba(20, 30, 8, 0.65) 0%,
-    rgba(8, 12, 4, 0.82) 100%
-  );
+  background:
+    linear-gradient(160deg, rgba(255, 255, 255, 0.03) 0%, transparent 30%),
+    linear-gradient(180deg, var(--surface-top) 0%, var(--surface-mid) 45%, var(--surface-low) 100%);
   backdrop-filter: blur(var(--backdrop-blur));
   -webkit-backdrop-filter: blur(var(--backdrop-blur));
   border: 1px solid var(--line);
   box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.45),
-    inset 0 1px 0 rgba(127, 176, 74, 0.05);
+    0 22px 44px rgba(0, 0, 0, 0.42),
+    10px 10px 0 var(--bevel-shadow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    inset 1px 0 0 rgba(255, 255, 255, 0.02),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.28);
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--frame-cut)) 0,
+    100% var(--frame-cut),
+    100% 100%,
+    var(--frame-cut) 100%,
+    0 calc(100% - var(--frame-cut))
+  );
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-panel::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  pointer-events: none;
+  border: 1px solid rgba(255, 255, 255, 0.02);
+  clip-path: polygon(
+    0 0,
+    calc(100% - 14px) 0,
+    100% 14px,
+    100% 100%,
+    14px 100%,
+    0 calc(100% - 14px)
+  );
+}
+
+.glass-panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(135deg, var(--edge-highlight) 0%, transparent 24%),
+    linear-gradient(315deg, rgba(0, 0, 0, 0.18) 0%, transparent 20%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, transparent 16%);
+}
+
+.panel-inset {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.025) 0%, rgba(0, 0, 0, 0.08) 100%);
+  border: 1px solid rgba(102, 227, 196, 0.16);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.24),
+    6px 6px 0 rgba(8, 12, 4, 0.8);
+  clip-path: polygon(
+    0 0,
+    calc(100% - 12px) 0,
+    100% 12px,
+    100% 100%,
+    12px 100%,
+    0 calc(100% - 12px)
+  );
+}
+
+.frame-cut {
+  clip-path: polygon(
+    0 0,
+    calc(100% - 14px) 0,
+    100% 14px,
+    100% 100%,
+    14px 100%,
+    0 calc(100% - 14px)
+  );
+}
+
+.hud-chip {
+  background: linear-gradient(180deg, rgba(102, 227, 196, 0.14) 0%, rgba(102, 227, 196, 0.06) 100%);
+  border: 1px solid rgba(102, 227, 196, 0.2);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    4px 4px 0 rgba(8, 12, 4, 0.7);
+  clip-path: polygon(
+    0 0,
+    calc(100% - 10px) 0,
+    100% 10px,
+    100% 100%,
+    10px 100%,
+    0 calc(100% - 10px)
+  );
+}
+
+.control-surface {
+  background: linear-gradient(180deg, rgba(29, 49, 68, 0.78) 0%, rgba(7, 14, 22, 0.92) 100%);
+  border: 1px solid var(--line);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    5px 5px 0 rgba(8, 12, 4, 0.82);
+  clip-path: polygon(
+    0 0,
+    calc(100% - 10px) 0,
+    100% 10px,
+    100% 100%,
+    10px 100%,
+    0 calc(100% - 10px)
+  );
+}
+
+.progress-grid {
+  position: relative;
+}
+
+.progress-grid::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(var(--grid-minor) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-minor) 1px, transparent 1px);
+  background-size: 18px 18px;
+  opacity: 0.18;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.7), transparent);
+}
+
+.interactive-frame {
+  position: relative;
+  overflow: hidden;
+}
+
+.interactive-frame::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.045) 0%, transparent 28%);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.interactive-frame:hover::before {
+  opacity: 1;
 }
 
 @utility glow-border {

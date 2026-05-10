@@ -42,15 +42,15 @@ export default function PublicProfilePage({ params }: { params: Promise<{ handle
   }, [handle]);
 
   return (
-    <div className="flex min-h-screen bg-background relative overflow-hidden">
+    <div className="flex min-h-screen relative overflow-hidden">
       <Sidebar />
 
-      <main className="flex-1 lg:ml-64 p-4 pt-20 lg:pt-8 lg:p-8 lg:pl-12 lg:pr-12 w-full overflow-x-hidden relative z-10">
-        <div className="max-w-[1000px] mx-auto pb-20 pt-4 xl:pt-10">
+      <main className="flex-1 lg:ml-56 p-4 pt-20 lg:pt-7 lg:pl-4 lg:pr-5 xl:pr-6 w-full overflow-x-hidden relative z-10">
+        <div className="w-full max-w-[1000px] mr-auto pb-20 pt-4 xl:pt-10">
 
           <Link
             href="/leaderboard"
-            className="inline-flex items-center gap-2 text-[var(--text-soft)] bg-white/5 border border-[var(--line)] px-5 py-3 font-orbitron font-black uppercase tracking-widest text-xs mb-10 hover:bg-[var(--gold)]/10 hover:text-[var(--gold)] hover:border-[var(--gold)]/30 transition-all group"
+            className="inline-flex items-center gap-2 text-[var(--text-soft)] control-surface px-5 py-3 font-orbitron font-black uppercase tracking-widest text-xs mb-10 hover:bg-[var(--gold)]/10 hover:text-[var(--gold)] hover:border-[var(--gold)]/30 transition-all group"
           >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
             Back to Leaderboard
@@ -78,7 +78,7 @@ export default function PublicProfilePage({ params }: { params: Promise<{ handle
               Operator Not Found
             </div>
           ) : (
-            <section className="glass-panel overflow-hidden border border-[var(--line)] shadow-2xl">
+            <section className="profile-shell overflow-hidden">
               {/* Cover */}
               <div className="relative h-40 md:h-56 bg-white/[0.02]">
                 {profile.coverUrl ? (
@@ -115,7 +115,7 @@ export default function PublicProfilePage({ params }: { params: Promise<{ handle
                       <div className="mt-3 text-sm font-bold text-[var(--gold)]">{profile.xp.toLocaleString()} XP</div>
                     )}
                   </div>
-                  <div className="text-[10px] font-black text-[var(--gold)] bg-[var(--gold)]/10 border border-[var(--gold)]/20 px-4 py-3 inline-flex items-center gap-2 uppercase tracking-widest">
+                  <div className="text-[10px] font-black text-[var(--gold)] hud-chip px-4 py-3 inline-flex items-center gap-2 uppercase tracking-widest">
                     <UserRound className="w-4 h-4" />
                     Public Profile
                   </div>
@@ -127,13 +127,13 @@ export default function PublicProfilePage({ params }: { params: Promise<{ handle
 
                 <div className="mt-8 flex flex-wrap gap-4 text-xs font-bold uppercase tracking-widest">
                   {profile.location && (
-                    <div className="inline-flex items-center gap-3 bg-white/5 border border-[var(--line)] px-5 py-3 text-[var(--text-soft)]">
+                    <div className="inline-flex items-center gap-3 control-surface px-5 py-3 text-[var(--text-soft)]">
                       <MapPin className="w-4 h-4 text-[var(--gold)]" />
                       {profile.location}
                     </div>
                   )}
                   {profile.website && (
-                    <div className={cn("inline-flex items-center gap-3 bg-white/5 border border-[var(--line)] px-5 py-3 text-[var(--text-soft)]")}>
+                    <div className={cn("inline-flex items-center gap-3 control-surface px-5 py-3 text-[var(--text-soft)]")}>
                       <LinkIcon className="w-4 h-4 text-[var(--gold)]" />
                       <span className="truncate max-w-[260px]">{profile.website}</span>
                     </div>

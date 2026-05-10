@@ -100,13 +100,13 @@ export function ProfileSection() {
             Update your footprint. Your identity is defined by your consistency and verification history.
           </p>
         </div>
-        <div className="flex items-center gap-2 text-[10px] font-black text-[var(--gold)] bg-[var(--gold)]/10 px-5 py-3 border border-[var(--gold)]/20 font-orbitron uppercase tracking-widest">
+        <div className="flex items-center gap-2 text-[10px] font-black text-[var(--gold)] hud-chip px-5 py-3 font-orbitron uppercase tracking-widest">
           <ShieldCheck className="w-4 h-4" />
           Sync: Online
         </div>
       </header>
 
-      <div className="glass-panel overflow-hidden border border-[var(--line)] shadow-2xl">
+      <div className="profile-shell overflow-hidden">
         {/* Cover */}
         <div className="relative h-48 md:h-64 bg-white/[0.02]">
           {profile.coverUrl ? (
@@ -121,7 +121,7 @@ export function ProfileSection() {
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-0)] to-transparent" />
 
-          <label className="absolute top-6 right-6 inline-flex items-center gap-2 cursor-pointer text-[10px] font-black text-white bg-black/60 hover:bg-[var(--gold)] hover:text-[var(--bg-0)] border border-white/10 px-5 py-3 backdrop-blur-xl transition-all font-orbitron uppercase tracking-widest shadow-xl group">
+          <label className="absolute top-6 right-6 inline-flex items-center gap-2 cursor-pointer text-[10px] font-black text-white control-surface hover:text-[var(--gold)] px-5 py-3 backdrop-blur-xl transition-all font-orbitron uppercase tracking-widest group">
             {uploadingCover ? (
               <span className="animate-pulse">Uploading...</span>
             ) : (
@@ -153,7 +153,7 @@ export function ProfileSection() {
                 <div className="absolute inset-0 bg-[var(--gold)]/10 opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
 
-              <label className="absolute -right-3 -bottom-3 w-10 h-10 bg-[var(--gold)] hover:bg-[var(--gold-light)] text-[var(--bg-0)] border border-[var(--gold)]/30 flex items-center justify-center cursor-pointer transition-all hover:scale-110 active:scale-95 z-10">
+              <label className="absolute -right-3 -bottom-3 w-10 h-10 hud-chip text-[var(--bg-0)] flex items-center justify-center cursor-pointer transition-all hover:scale-110 active:scale-95 z-10">
                 {uploadingAvatar ? (
                   <div className="w-4 h-4 border-2 border-[var(--bg-0)] border-t-transparent animate-spin" />
                 ) : (
@@ -174,7 +174,7 @@ export function ProfileSection() {
 
         {/* Body */}
         <div className="pt-20 md:pt-24 px-8 md:px-10 pb-10">
-          <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
+          <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-start">
             {/* Public card */}
             <div className="flex-1">
               <div className="flex items-start justify-between gap-6">
@@ -198,13 +198,13 @@ export function ProfileSection() {
 
               <div className="mt-10 flex flex-wrap gap-4 text-xs font-bold uppercase tracking-widest">
                 {profile.location && (
-                  <div className="inline-flex items-center gap-3 bg-white/5 border border-[var(--line)] px-5 py-3 text-[var(--text-soft)]">
+                  <div className="inline-flex items-center gap-3 control-surface px-5 py-3 text-[var(--text-soft)]">
                     <MapPin className="w-4 h-4 text-[var(--gold)]" />
                     {profile.location}
                   </div>
                 )}
                 {profile.website && (
-                  <div className="inline-flex items-center gap-3 bg-white/5 border border-[var(--line)] px-5 py-3 text-[var(--text-soft)] hover:text-white hover:border-[var(--gold)]/30 transition-all cursor-pointer">
+                  <div className="inline-flex items-center gap-3 control-surface px-5 py-3 text-[var(--text-soft)] hover:text-white hover:border-[var(--gold)]/30 transition-all cursor-pointer">
                     <LinkIcon className="w-4 h-4 text-[var(--gold)]" />
                     <span className="truncate max-w-[280px]">{profile.website}</span>
                   </div>
@@ -213,7 +213,7 @@ export function ProfileSection() {
             </div>
 
             {/* Edit form */}
-            <div className="w-full lg:w-[440px] space-y-10">
+            <div className="w-full lg:w-[440px] space-y-10 shrink-0">
               <div>
                 <h3 className="text-xs font-black text-white mb-6 font-orbitron uppercase tracking-[0.2em] flex items-center gap-3">
                   <Zap className="w-4 h-4 text-[var(--gold)] fill-[var(--gold)]" />
@@ -270,7 +270,7 @@ export function ProfileSection() {
                     <button
                       onClick={handleSave}
                       disabled={saving || !profile.id}
-                      className="flex items-center gap-2 bg-[var(--gold)] hover:bg-[var(--gold-light)] text-[var(--bg-0)] px-6 py-3 font-black uppercase tracking-widest text-xs transition-all disabled:opacity-50"
+                      className="flex items-center gap-2 hud-chip text-[var(--bg-0)] px-6 py-3 font-black uppercase tracking-widest text-xs transition-all disabled:opacity-50"
                     >
                       <Save className="w-4 h-4" />
                       {saving ? "Saving..." : "Save Profile"}

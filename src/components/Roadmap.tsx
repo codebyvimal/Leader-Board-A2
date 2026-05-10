@@ -23,13 +23,13 @@ export function Roadmap({ sections, onTaskClick }: RoadmapProps) {
   const getStatusClasses = (status: Task["status"]) => {
     switch (status) {
       case "completed":
-        return "border-[var(--gold)]/30 bg-[var(--gold)]/5 opacity-90";
+        return "panel-inset opacity-95";
       case "in-progress":
-        return "border-amber-700/40 bg-amber-900/10 scale-[1.02] z-20 ring-1 ring-amber-700/20";
+        return "panel-inset scale-[1.02] z-20 ring-1 ring-[var(--gold)]/20";
       case "upcoming":
-        return "border-[var(--line)] bg-white/[0.02] hover:bg-white/[0.05] cursor-pointer hover:border-[var(--gold)]/30";
+        return "control-surface hover:bg-white/[0.05] cursor-pointer hover:border-[var(--gold)]/30";
       case "locked":
-        return "border-[var(--line)] bg-transparent opacity-40 cursor-not-allowed grayscale";
+        return "control-surface opacity-40 cursor-not-allowed grayscale";
     }
   };
 
@@ -52,7 +52,7 @@ export function Roadmap({ sections, onTaskClick }: RoadmapProps) {
             <div className="h-[1px] flex-1 bg-gradient-to-r from-[var(--line)] to-transparent" />
           </div>
 
-          <div className="space-y-6 relative pl-4">
+          <div className="space-y-6 relative pl-4 progress-grid">
             {/* Vertical timeline line */}
             <div className="absolute left-[34px] top-4 bottom-4 w-[2px] bg-gradient-to-b from-[var(--line)] via-[var(--line)] to-transparent z-0" />
 
@@ -66,12 +66,12 @@ export function Roadmap({ sections, onTaskClick }: RoadmapProps) {
                 whileHover={task.status !== "locked" ? { x: 8 } : {}}
                 onClick={() => task.status !== "locked" && onTaskClick(task)}
                 className={cn(
-                  "relative z-10 p-6 xl:p-8 border backdrop-blur-xl transition-all duration-500 ml-16 glass-panel",
+                  "relative z-10 p-6 xl:p-8 border backdrop-blur-xl transition-all duration-500 ml-16 glass-panel interactive-frame",
                   getStatusClasses(task.status)
                 )}
               >
                 {/* Timeline node */}
-                <div className="absolute -left-[54px] top-1/2 -translate-y-1/2 w-14 h-14 flex items-center justify-center bg-[var(--bg-0)] border-2 border-[var(--line)] shadow-[0_0_15px_rgba(0,0,0,0.5)] z-20">
+                <div className="absolute -left-[54px] top-1/2 -translate-y-1/2 w-14 h-14 flex items-center justify-center control-surface border-2 z-20">
                   {getStatusIcon(task.status)}
                 </div>
 
@@ -110,7 +110,7 @@ export function Roadmap({ sections, onTaskClick }: RoadmapProps) {
                 {task.status === "in-progress" && (
                   <div className="mt-6 pt-6 border-t border-[var(--line)] flex justify-end">
                     <button
-                      className="text-xs font-black uppercase tracking-[0.2em] bg-[var(--gold)]/10 text-[var(--gold)] hover:bg-[var(--gold)]/20 px-6 py-3 transition-all border border-[var(--gold)]/30 flex items-center gap-3"
+                      className="text-xs font-black uppercase tracking-[0.2em] hud-chip text-[var(--gold)] hover:bg-[var(--gold)]/20 px-6 py-3 transition-all flex items-center gap-3"
                       onClick={(e) => { e.stopPropagation(); onTaskClick(task); }}
                     >
                       Submit Proof

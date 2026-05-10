@@ -30,6 +30,7 @@ export default function RootLayout({
         className={`${orbitron.variable} ${spaceGrotesk.variable} antialiased min-h-screen`}
       >
         <AuthGuard>
+          <div className="app-grid" />
           <FluidCursor />
           <div className="shifting-bg" />
           {children}

@@ -34,13 +34,13 @@ function accentForType(type: ActivityEvent["type"]) {
 
 export function ActivityFeed({ events }: ActivityFeedProps) {
   return (
-    <div className="glass-panel p-8 border border-[var(--line)]">
+    <div className="glass-panel progress-grid p-8 border border-[var(--line)]">
       <div className="flex items-center justify-between mb-10">
         <div className="flex items-center gap-3">
           <Zap className="w-4 h-4 text-[var(--gold)] fill-[var(--gold)]" />
           <h2 className="text-sm font-black text-white tracking-[0.2em] uppercase font-orbitron">Activity Stream</h2>
         </div>
-        <div className="text-[10px] font-black text-[var(--text-soft)] uppercase tracking-widest bg-white/5 px-4 py-2 border border-[var(--line)]">
+        <div className="control-surface text-[10px] font-black text-[var(--text-soft)] uppercase tracking-widest px-4 py-2">
           Last 7 Days
         </div>
       </div>
@@ -55,11 +55,11 @@ export function ActivityFeed({ events }: ActivityFeedProps) {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: index * 0.05 }}
-              className="flex gap-5 p-5 border border-[var(--line)] bg-[var(--bg-0)]/40 hover:bg-white/[0.04] transition-all duration-300 group"
+              className="flex gap-5 p-5 border border-[var(--line)] control-surface hover:bg-white/[0.04] transition-all duration-300 group interactive-frame frame-cut"
             >
               <div
                 className={cn(
-                  "w-12 h-12 border flex items-center justify-center shrink-0 transition-transform group-hover:scale-110 duration-300",
+                  "w-12 h-12 border flex items-center justify-center shrink-0 transition-transform group-hover:scale-110 duration-300 frame-cut",
                   accentForType(event.type)
                 )}
               >
@@ -69,7 +69,7 @@ export function ActivityFeed({ events }: ActivityFeedProps) {
               <div className="flex-1 min-w-0">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div className="flex items-center gap-4 min-w-0">
-                    <div className="w-10 h-10 bg-gradient-to-br from-[var(--bg-0)] to-[var(--bg-1)] flex items-center justify-center text-xs font-black border border-[var(--line)] shadow-lg shrink-0 group-hover:border-[var(--gold)]/30 transition-colors">
+                    <div className="w-10 h-10 control-surface flex items-center justify-center text-xs font-black shrink-0 group-hover:border-[var(--gold)]/30 transition-colors">
                       {event.userAvatar}
                     </div>
                     <div className="min-w-0">
